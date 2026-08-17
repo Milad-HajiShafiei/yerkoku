@@ -1,0 +1,1703 @@
+{
+  "name": "Mobile Application",
+  "description": "Modern React Native mobile app with comprehensive architecture",
+  "icon": "📱",
+  "sections": [
+    {
+      "title": "Project Overview",
+      "icon": "📋",
+      "description": "Basic project information and target platforms",
+      "fields": [
+        {
+          "key": "project.name",
+          "label": "Project Name",
+          "type": "text",
+          "required": true,
+          "placeholder": "e.g., FitTrack"
+        },
+        {
+          "key": "project.description",
+          "label": "Description",
+          "type": "textarea",
+          "placeholder": "Describe what your mobile application does, its purpose, and target users"
+        },
+        {
+          "key": "project.type",
+          "label": "Application Type",
+          "type": "select",
+          "options": [
+            { "value": "social", "label": "Social Media / Community" },
+            { "value": "ecommerce", "label": "E-commerce / Shopping" },
+            { "value": "productivity", "label": "Productivity / Utility" },
+            { "value": "fitness", "label": "Health & Fitness" },
+            { "value": "finance", "label": "Finance / Banking" },
+            { "value": "education", "label": "Education / Learning" },
+            { "value": "entertainment", "label": "Media / Entertainment" },
+            { "value": "communication", "label": "Communication / Chat" },
+            { "value": "business", "label": "Business / Enterprise" },
+            { "value": "travel", "label": "Travel / Navigation" },
+            { "value": "other", "label": "Other" }
+          ],
+          "default": "productivity"
+        },
+        {
+          "key": "project.target_platforms",
+          "label": "Target Platforms",
+          "type": "multiselect",
+          "options": [
+            { "value": "ios", "label": "iOS (iPhone/iPad)" },
+            { "value": "android", "label": "Android" },
+            { "value": "android_tv", "label": "Android TV" },
+            { "value": "ipad", "label": "iPad (Tablet UI)" }
+          ],
+          "default": ["ios", "android"]
+        },
+        {
+          "key": "project.min_ios_version",
+          "label": "Minimum iOS Version",
+          "type": "select",
+          "options": [
+            { "value": "17", "label": "iOS 17+" },
+            { "value": "16", "label": "iOS 16+" },
+            { "value": "15", "label": "iOS 15+" },
+            { "value": "14", "label": "iOS 14+" }
+          ],
+          "default": "16"
+        },
+        {
+          "key": "project.min_android_version",
+          "label": "Minimum Android Version",
+          "type": "select",
+          "options": [
+            { "value": "14", "label": "Android 14 (API 34)" },
+            { "value": "13", "label": "Android 13 (API 33)" },
+            { "value": "12", "label": "Android 12 (API 31)" },
+            { "value": "11", "label": "Android 11 (API 30)" },
+            { "value": "10", "label": "Android 10 (API 29)" }
+          ],
+          "default": "12"
+        },
+        {
+          "key": "project.team_size",
+          "label": "Team Size",
+          "type": "select",
+          "options": [
+            { "value": "solo", "label": "Solo Developer" },
+            { "value": "small", "label": "Small Team (2-5)" },
+            { "value": "medium", "label": "Medium Team (6-15)" },
+            { "value": "large", "label": "Large Team (16+)" }
+          ],
+          "default": "small"
+        }
+      ]
+    },
+    {
+      "title": "Technology Stack",
+      "icon": "⚙️",
+      "description": "Core technologies and dependencies",
+      "fields": [
+        {
+          "key": "tech.react_native_version",
+          "label": "React Native Version",
+          "type": "select",
+          "options": [
+            { "value": "0.76", "label": "0.76 (Latest)" },
+            { "value": "0.75", "label": "0.75" },
+            { "value": "0.74", "label": "0.74" },
+            { "value": "expo_52", "label": "Expo SDK 52 (Latest)" },
+            { "value": "expo_51", "label": "Expo SDK 51" }
+          ],
+          "default": "0.76"
+        },
+        {
+          "key": "tech.framework",
+          "label": "Framework / Meta-Framework",
+          "type": "select",
+          "options": [
+            { "value": "expo", "label": "Expo (Managed Workflow)" },
+            { "value": "expo_dev_client", "label": "Expo with Dev Client" },
+            { "value": "bare_rn", "label": "React Native CLI (Bare)" },
+            {
+              "value": "expo_router",
+              "label": "Expo Router (File-based routing)"
+            }
+          ],
+          "default": "expo"
+        },
+        {
+          "key": "tech.language",
+          "label": "Language",
+          "type": "select",
+          "options": [
+            {
+              "value": "typescript_strict",
+              "label": "TypeScript (Strict Mode)"
+            },
+            { "value": "typescript", "label": "TypeScript" },
+            { "value": "javascript", "label": "JavaScript" }
+          ],
+          "default": "typescript_strict"
+        },
+        {
+          "key": "tech.package_manager",
+          "label": "Package Manager",
+          "type": "select",
+          "options": [
+            { "value": "npm", "label": "npm" },
+            { "value": "yarn", "label": "Yarn" },
+            { "value": "pnpm", "label": "pnpm" },
+            { "value": "bun", "label": "Bun" }
+          ],
+          "default": "npm"
+        },
+        {
+          "key": "tech.js_engine",
+          "label": "JavaScript Engine",
+          "type": "select",
+          "options": [
+            { "value": "hermes", "label": "Hermes (Recommended)" },
+            { "value": "jsc", "label": "JavaScriptCore" },
+            { "value": "v8", "label": "V8" }
+          ],
+          "default": "hermes"
+        },
+        {
+          "key": "tech.new_architecture",
+          "label": "New Architecture (Fabric + TurboModules)",
+          "type": "checkbox",
+          "default": true,
+          "description": "Enable React Native New Architecture for better performance"
+        },
+        {
+          "key": "tech.additional_deps",
+          "label": "Search & Add npm Packages",
+          "type": "crate_search",
+          "target_list_key": "tech.additional_packages",
+          "registry": "npm",
+          "placeholder": "Type package name (e.g., axios, zustand, react-native-reanimated)"
+        },
+        {
+          "key": "tech.additional_packages",
+          "label": "Additional Packages",
+          "type": "multiselect",
+          "hidden": true,
+          "default": []
+        }
+      ]
+    },
+    {
+      "title": "Architecture",
+      "icon": "🏗️",
+      "description": "Code organization and architectural patterns",
+      "fields": [
+        {
+          "key": "arch.pattern",
+          "label": "Architecture Pattern",
+          "type": "select",
+          "options": [
+            {
+              "value": "clean_architecture",
+              "label": "Clean Architecture (Layers)"
+            },
+            { "value": "feature_based", "label": "Feature-Based Structure" },
+            { "value": "atomic_design", "label": "Atomic Design" },
+            { "value": "mvvm", "label": "MVVM (Model-View-ViewModel)" },
+            { "value": "flux", "label": "Flux / Redux Pattern" },
+            { "value": "simple", "label": "Simple Flat Structure" }
+          ],
+          "default": "feature_based"
+        },
+        {
+          "key": "arch.folder_structure",
+          "label": "Folder Organization",
+          "type": "select",
+          "options": [
+            {
+              "value": "by_feature",
+              "label": "By Feature (features/auth, features/profile)"
+            },
+            {
+              "value": "by_type",
+              "label": "By Type (components, hooks, services)"
+            },
+            {
+              "value": "by_layer",
+              "label": "By Layer (presentation, domain, data)"
+            },
+            { "value": "hybrid", "label": "Hybrid (Features + Shared)" }
+          ],
+          "default": "hybrid"
+        },
+        {
+          "key": "arch.monorepo",
+          "label": "Monorepo Setup",
+          "type": "checkbox",
+          "default": false,
+          "description": "Use monorepo for shared code between apps"
+        },
+        {
+          "key": "arch.monorepo_tool",
+          "label": "Monorepo Tool",
+          "type": "select",
+          "options": [
+            { "value": "turborepo", "label": "Turborepo" },
+            { "value": "nx", "label": "Nx" },
+            { "value": "yarn_workspaces", "label": "Yarn Workspaces" },
+            { "value": "pnpm_workspaces", "label": "pnpm Workspaces" },
+            { "value": "none", "label": "None" }
+          ],
+          "default": "turborepo"
+        },
+        {
+          "key": "arch.error_handling",
+          "label": "Error Handling Strategy",
+          "type": "select",
+          "options": [
+            { "value": "error_boundary", "label": "Error Boundaries + Toast" },
+            { "value": "result_type", "label": "Result Type Pattern" },
+            { "value": "try_catch", "label": "Try/Catch with Custom Errors" },
+            { "value": "neverthrow", "label": "Neverthrow (Functional)" }
+          ],
+          "default": "error_boundary"
+        },
+        {
+          "key": "arch.config_management",
+          "label": "Configuration Management",
+          "type": "select",
+          "options": [
+            {
+              "value": "env_files",
+              "label": ".env Files (react-native-config)"
+            },
+            {
+              "value": "expo_constants",
+              "label": "Expo Constants / app.config.js"
+            },
+            { "value": "remote_config", "label": "Remote Config (Firebase)" },
+            { "value": "hybrid", "label": "Hybrid (Local + Remote)" }
+          ],
+          "default": "expo_constants"
+        },
+        {
+          "key": "arch.dependency_injection",
+          "label": "Dependency Injection",
+          "type": "checkbox",
+          "default": false,
+          "description": "Use DI container (inversify, tsyringe)"
+        },
+        {
+          "key": "arch.api_layer",
+          "label": "API Layer Abstraction",
+          "type": "checkbox",
+          "default": true,
+          "description": "Separate API services from business logic"
+        }
+      ]
+    },
+    {
+      "title": "UI Design",
+      "icon": "🎨",
+      "description": "Visual design, theming, and component library",
+      "fields": [
+        {
+          "key": "ui.component_library",
+          "label": "Component Library",
+          "type": "select",
+          "options": [
+            { "value": "tamagui", "label": "Tamagui (Universal)" },
+            {
+              "value": "react_native_paper",
+              "label": "React Native Paper (Material)"
+            },
+            { "value": "native_base", "label": "NativeBase" },
+            { "value": "gluestack", "label": "Gluestack UI" },
+            {
+              "value": "react_native_elements",
+              "label": "React Native Elements"
+            },
+            { "value": "custom", "label": "Custom Design System" },
+            { "value": "none", "label": "None (Raw Components)" }
+          ],
+          "default": "tamagui"
+        },
+        {
+          "key": "ui.styling_approach",
+          "label": "Styling Approach",
+          "type": "select",
+          "options": [
+            { "value": "tamagui", "label": "Tamagui (Atomic CSS)" },
+            { "value": "nativewind", "label": "NativeWind (Tailwind CSS)" },
+            { "value": "styled_components", "label": "Styled Components" },
+            { "value": "stylesheet", "label": "StyleSheet.create" },
+            { "value": "gluestack", "label": "Gluestack Styling" },
+            { "value": "unistyles", "label": "React Native Unistyles" }
+          ],
+          "default": "nativewind"
+        },
+        {
+          "key": "ui.theme",
+          "label": "Theme Mode",
+          "type": "select",
+          "options": [
+            { "value": "light", "label": "Light Theme" },
+            { "value": "dark", "label": "Dark Theme" },
+            { "value": "auto", "label": "Auto (Follow System)" },
+            { "value": "both", "label": "Both (Light + Dark with toggle)" }
+          ],
+          "default": "auto"
+        },
+        {
+          "key": "ui.design_system",
+          "label": "Design System / Style Guide",
+          "type": "select",
+          "options": [
+            { "value": "material3", "label": "Material Design 3" },
+            { "value": "ios_hig", "label": "Apple Human Interface Guidelines" },
+            { "value": "custom", "label": "Custom Design System" },
+            { "value": "fluent", "label": "Fluent Design" },
+            { "value": "none", "label": "None" }
+          ],
+          "default": "material3"
+        },
+        {
+          "key": "ui.animations",
+          "label": "Animation Library",
+          "type": "select",
+          "options": [
+            { "value": "reanimated", "label": "React Native Reanimated 3" },
+            { "value": "moti", "label": "Moti (Reanimated wrapper)" },
+            { "value": "animated_api", "label": "Built-in Animated API" },
+            { "value": "lottie", "label": "Lottie Animations" },
+            { "value": "none", "label": "None" }
+          ],
+          "default": "reanimated"
+        },
+        {
+          "key": "ui.gestures",
+          "label": "Gesture Handling",
+          "type": "select",
+          "options": [
+            {
+              "value": "gesture_handler",
+              "label": "React Native Gesture Handler"
+            },
+            { "value": "pan_responder", "label": "Built-in PanResponder" },
+            { "value": "none", "label": "None" }
+          ],
+          "default": "gesture_handler"
+        },
+        {
+          "key": "ui.icons",
+          "label": "Icon Library",
+          "type": "select",
+          "options": [
+            { "value": "expo_icons", "label": "@expo/vector-icons" },
+            { "value": "phosphor", "label": "Phosphor Icons" },
+            { "value": "lucide", "label": "Lucide React Native" },
+            { "value": "feather", "label": "Feather Icons" },
+            { "value": "custom_svg", "label": "Custom SVG Icons" },
+            { "value": "none", "label": "None" }
+          ],
+          "default": "expo_icons"
+        },
+        {
+          "key": "ui.fonts",
+          "label": "Custom Fonts",
+          "type": "checkbox",
+          "default": true,
+          "description": "Load and use custom fonts"
+        },
+        {
+          "key": "ui.splash_screen",
+          "label": "Custom Splash Screen",
+          "type": "checkbox",
+          "default": true,
+          "description": "Animated splash screen on app launch"
+        },
+        {
+          "key": "ui.onboarding",
+          "label": "Onboarding Screens",
+          "type": "checkbox",
+          "default": true,
+          "description": "First-launch onboarding carousel"
+        },
+        {
+          "key": "ui.haptics",
+          "label": "Haptic Feedback",
+          "type": "checkbox",
+          "default": true,
+          "description": "Vibration/haptic feedback on interactions"
+        },
+        {
+          "key": "ui.responsive",
+          "label": "Responsive Layout",
+          "type": "checkbox",
+          "default": true,
+          "description": "Adapt layout for tablets and different screen sizes"
+        },
+        {
+          "key": "ui.accessibility",
+          "label": "Accessibility (a11y)",
+          "type": "checkbox",
+          "default": true,
+          "description": "Screen reader support, dynamic font sizing"
+        }
+      ]
+    },
+    {
+      "title": "Navigation",
+      "icon": "🗺️",
+      "description": "Screen navigation and routing",
+      "fields": [
+        {
+          "key": "nav.library",
+          "label": "Navigation Library",
+          "type": "select",
+          "options": [
+            { "value": "react_navigation", "label": "React Navigation 7" },
+            { "value": "expo_router", "label": "Expo Router (File-based)" },
+            {
+              "value": "native_navigation",
+              "label": "React Native Navigation (Wix)"
+            },
+            { "value": "router_flare", "label": "Router Flare" }
+          ],
+          "default": "react_navigation"
+        },
+        {
+          "key": "nav.stack",
+          "label": "Stack Navigation",
+          "type": "checkbox",
+          "default": true,
+          "description": "Push/pop screens on a stack"
+        },
+        {
+          "key": "nav.tabs",
+          "label": "Tab Navigation",
+          "type": "checkbox",
+          "default": true,
+          "description": "Bottom tab bar navigation"
+        },
+        {
+          "key": "nav.drawer",
+          "label": "Drawer Navigation",
+          "type": "checkbox",
+          "default": false,
+          "description": "Side drawer menu"
+        },
+        {
+          "key": "nav.deep_linking",
+          "label": "Deep Linking",
+          "type": "checkbox",
+          "default": true,
+          "description": "Handle deep links (myapp://screen/id)"
+        },
+        {
+          "key": "nav.universal_links",
+          "label": "Universal Links (iOS) / App Links (Android)",
+          "type": "checkbox",
+          "default": false,
+          "description": "Open app from web URLs"
+        },
+        {
+          "key": "nav.screens",
+          "label": "Screens",
+          "type": "list_builder",
+          "placeholder": "e.g., HomeScreen - Main dashboard with feed",
+          "default": []
+        },
+        {
+          "key": "nav.transitions",
+          "label": "Screen Transitions",
+          "type": "select",
+          "options": [
+            { "value": "default", "label": "Default (Slide)" },
+            { "value": "fade", "label": "Fade In/Out" },
+            {
+              "value": "slide_from_bottom",
+              "label": "Slide from Bottom (Modal)"
+            },
+            { "value": "custom", "label": "Custom Animations" },
+            { "value": "none", "label": "Instant Switch" }
+          ],
+          "default": "default"
+        },
+        {
+          "key": "nav.gesture_navigation",
+          "label": "Gesture Navigation (Swipe Back)",
+          "type": "checkbox",
+          "default": true,
+          "description": "Swipe from edge to go back"
+        },
+        {
+          "key": "nav.state_persistence",
+          "label": "Navigation State Persistence",
+          "type": "checkbox",
+          "default": false,
+          "description": "Restore navigation state on app restart"
+        }
+      ]
+    },
+    {
+      "title": "State Management",
+      "icon": "🔄",
+      "description": "Data flow and state architecture",
+      "fields": [
+        {
+          "key": "state.global_solution",
+          "label": "Global State Management",
+          "type": "select",
+          "options": [
+            { "value": "zustand", "label": "Zustand" },
+            { "value": "redux_toolkit", "label": "Redux Toolkit" },
+            { "value": "jotai", "label": "Jotai" },
+            { "value": "recoil", "label": "Recoil" },
+            { "value": "mobx", "label": "MobX" },
+            { "value": "context", "label": "React Context API" },
+            { "value": "none", "label": "None (Props drilling)" }
+          ],
+          "default": "zustand"
+        },
+        {
+          "key": "state.server_state",
+          "label": "Server State / Data Fetching",
+          "type": "select",
+          "options": [
+            {
+              "value": "tanstack_query",
+              "label": "TanStack Query (React Query)"
+            },
+            { "value": "swr", "label": "SWR" },
+            { "value": "apollo", "label": "Apollo Client (GraphQL)" },
+            { "value": "rtk_query", "label": "RTK Query" },
+            { "value": "custom", "label": "Custom Hooks" }
+          ],
+          "default": "tanstack_query"
+        },
+        {
+          "key": "state.offline_support",
+          "label": "Offline Support",
+          "type": "checkbox",
+          "default": false,
+          "description": "Cache data and sync when online"
+        },
+        {
+          "key": "state.optimistic_updates",
+          "label": "Optimistic Updates",
+          "type": "checkbox",
+          "default": true,
+          "description": "Update UI immediately before server confirmation"
+        },
+        {
+          "key": "state.realtime_updates",
+          "label": "Real-time Updates",
+          "type": "select",
+          "options": [
+            { "value": "websocket", "label": "WebSocket" },
+            { "value": "firebase", "label": "Firebase Realtime DB" },
+            { "value": "supabase", "label": "Supabase Realtime" },
+            { "value": "sse", "label": "Server-Sent Events (SSE)" },
+            { "value": "polling", "label": "Polling" },
+            { "value": "none", "label": "None" }
+          ],
+          "default": "none"
+        },
+        {
+          "key": "state.url_state",
+          "label": "URL/Deep Link State Sync",
+          "type": "checkbox",
+          "default": false,
+          "description": "Sync filters and params with deep links"
+        }
+      ]
+    },
+    {
+      "title": "Data & API",
+      "icon": "🌐",
+      "description": "API integration and data handling",
+      "fields": [
+        {
+          "key": "api.base_url",
+          "label": "API Base URL",
+          "type": "text",
+          "placeholder": "e.g., https://api.example.com/v1"
+        },
+        {
+          "key": "api.client",
+          "label": "HTTP Client",
+          "type": "select",
+          "options": [
+            { "value": "axios", "label": "Axios" },
+            { "value": "fetch", "label": "Native Fetch" },
+            { "value": "ky", "label": "Ky" },
+            { "value": "graphql", "label": "GraphQL Client (Apollo/Urql)" }
+          ],
+          "default": "axios"
+        },
+        {
+          "key": "api.auth_header",
+          "label": "Auth Header Format",
+          "type": "select",
+          "options": [
+            { "value": "bearer", "label": "Bearer Token" },
+            { "value": "cookie", "label": "Cookie-based" },
+            { "value": "custom", "label": "Custom Header" },
+            { "value": "none", "label": "No Authentication" }
+          ],
+          "default": "bearer"
+        },
+        {
+          "key": "api.endpoints",
+          "label": "API Endpoints",
+          "type": "list_builder",
+          "placeholder": "e.g., GET /users - Fetch user profile",
+          "default": []
+        },
+        {
+          "key": "api.error_handling",
+          "label": "Error Handling Strategy",
+          "type": "select",
+          "options": [
+            { "value": "toast", "label": "Toast Notifications" },
+            { "value": "inline", "label": "Inline Error Messages" },
+            { "value": "error_boundary", "label": "Error Boundaries" },
+            { "value": "combined", "label": "Combined (Toast + Boundary)" }
+          ],
+          "default": "combined"
+        },
+        {
+          "key": "api.caching",
+          "label": "Response Caching",
+          "type": "checkbox",
+          "default": true,
+          "description": "Cache API responses to reduce network calls"
+        },
+        {
+          "key": "api.retry_logic",
+          "label": "Retry Logic",
+          "type": "checkbox",
+          "default": true,
+          "description": "Automatically retry failed requests"
+        },
+        {
+          "key": "api.pagination",
+          "label": "Pagination Strategy",
+          "type": "select",
+          "options": [
+            { "value": "cursor", "label": "Cursor-based" },
+            { "value": "offset", "label": "Offset-based (Page/Limit)" },
+            { "value": "infinite_scroll", "label": "Infinite Scroll" },
+            { "value": "none", "label": "None" }
+          ],
+          "default": "infinite_scroll"
+        }
+      ]
+    },
+    {
+      "title": "Authentication",
+      "icon": "🔐",
+      "description": "User authentication and security",
+      "fields": [
+        {
+          "key": "auth.method",
+          "label": "Authentication Method",
+          "type": "select",
+          "options": [
+            { "value": "jwt", "label": "JWT Tokens" },
+            { "value": "session", "label": "Session-based" },
+            { "value": "oauth2", "label": "OAuth2 / OpenID Connect" },
+            { "value": "firebase_auth", "label": "Firebase Auth" },
+            { "value": "supabase_auth", "label": "Supabase Auth" },
+            { "value": "auth0", "label": "Auth0" },
+            { "value": "cognito", "label": "AWS Cognito" },
+            { "value": "none", "label": "No Authentication" }
+          ],
+          "default": "jwt"
+        },
+        {
+          "key": "auth.social_providers",
+          "label": "Social Login Providers",
+          "type": "multiselect",
+          "options": [
+            { "value": "google", "label": "Google" },
+            { "value": "apple", "label": "Apple Sign-In" },
+            { "value": "facebook", "label": "Facebook" },
+            { "value": "github", "label": "GitHub" },
+            { "value": "twitter", "label": "Twitter/X" },
+            { "value": "microsoft", "label": "Microsoft" }
+          ],
+          "default": ["google", "apple"]
+        },
+        {
+          "key": "auth.biometrics",
+          "label": "Biometric Authentication",
+          "type": "checkbox",
+          "default": true,
+          "description": "Face ID / Touch ID / Fingerprint unlock"
+        },
+        {
+          "key": "auth.token_storage",
+          "label": "Token Storage",
+          "type": "select",
+          "options": [
+            {
+              "value": "secure_store",
+              "label": "Secure Store (Keychain/Keystore)"
+            },
+            { "value": "mmkv", "label": "MMKV Encrypted" },
+            { "value": "async_storage", "label": "AsyncStorage (Less secure)" },
+            { "value": "memory", "label": "In-Memory Only" }
+          ],
+          "default": "secure_store"
+        },
+        {
+          "key": "auth.refresh_token",
+          "label": "Token Refresh",
+          "type": "checkbox",
+          "default": true,
+          "description": "Automatically refresh expired tokens"
+        },
+        {
+          "key": "auth.mfa",
+          "label": "Multi-Factor Authentication",
+          "type": "checkbox",
+          "default": false,
+          "description": "TOTP/SMS-based 2FA"
+        },
+        {
+          "key": "auth.roles",
+          "label": "User Roles",
+          "type": "list_builder",
+          "placeholder": "e.g., admin - Full access to all features",
+          "default": []
+        }
+      ]
+    },
+    {
+      "title": "Device Features",
+      "icon": "📱",
+      "description": "Native device capabilities and sensors",
+      "fields": [
+        {
+          "key": "device.push_notifications",
+          "label": "Push Notifications",
+          "type": "checkbox",
+          "default": false,
+          "description": "Send push notifications to users"
+        },
+        {
+          "key": "device.push_provider",
+          "label": "Push Notification Provider",
+          "type": "select",
+          "options": [
+            { "value": "firebase_fcm", "label": "Firebase FCM" },
+            { "value": "expo_notifications", "label": "Expo Notifications" },
+            { "value": "onesignal", "label": "OneSignal" },
+            { "value": "apns", "label": "Apple APNs (Direct)" },
+            { "value": "none", "label": "None" }
+          ],
+          "default": "firebase_fcm"
+        },
+        {
+          "key": "device.camera",
+          "label": "Camera Access",
+          "type": "checkbox",
+          "default": false,
+          "description": "Take photos and record videos"
+        },
+        {
+          "key": "device.location",
+          "label": "Location / GPS",
+          "type": "checkbox",
+          "default": false,
+          "description": "Access device location"
+        },
+        {
+          "key": "device.maps",
+          "label": "Maps Integration",
+          "type": "select",
+          "options": [
+            { "value": "google_maps", "label": "Google Maps" },
+            { "value": "mapbox", "label": "Mapbox" },
+            { "value": "apple_maps", "label": "Apple Maps" },
+            { "value": "none", "label": "None" }
+          ],
+          "default": "none"
+        },
+        {
+          "key": "device.contacts",
+          "label": "Contacts Access",
+          "type": "checkbox",
+          "default": false,
+          "description": "Read device contacts"
+        },
+        {
+          "key": "device.media_library",
+          "label": "Photo/Media Library Access",
+          "type": "checkbox",
+          "default": false,
+          "description": "Access photos and videos"
+        },
+        {
+          "key": "device.microphone",
+          "label": "Microphone / Audio Recording",
+          "type": "checkbox",
+          "default": false,
+          "description": "Record audio"
+        },
+        {
+          "key": "device.bluetooth",
+          "label": "Bluetooth / BLE",
+          "type": "checkbox",
+          "default": false,
+          "description": "Connect to Bluetooth devices"
+        },
+        {
+          "key": "device.nfc",
+          "label": "NFC",
+          "type": "checkbox",
+          "default": false,
+          "description": "Read/write NFC tags"
+        },
+        {
+          "key": "device.sensors",
+          "label": "Device Sensors",
+          "type": "multiselect",
+          "options": [
+            { "value": "accelerometer", "label": "Accelerometer" },
+            { "value": "gyroscope", "label": "Gyroscope" },
+            { "value": "barometer", "label": "Barometer" },
+            { "value": "magnetometer", "label": "Magnetometer" },
+            { "value": "pedometer", "label": "Pedometer / Step Counter" }
+          ],
+          "default": []
+        },
+        {
+          "key": "device.file_sharing",
+          "label": "File Sharing / Document Picker",
+          "type": "checkbox",
+          "default": false,
+          "description": "Share and pick files"
+        },
+        {
+          "key": "device.in_app_purchase",
+          "label": "In-App Purchases",
+          "type": "checkbox",
+          "default": false,
+          "description": "App Store / Play Store purchases"
+        },
+        {
+          "key": "device.app_widgets",
+          "label": "Home Screen Widgets",
+          "type": "checkbox",
+          "default": false,
+          "description": "iOS widgets / Android widgets"
+        },
+        {
+          "key": "device.app_clips",
+          "label": "App Clips (iOS) / Instant Apps (Android)",
+          "type": "checkbox",
+          "default": false,
+          "description": "Lightweight app experiences"
+        }
+      ]
+    },
+    {
+      "title": "Storage & Persistence",
+      "icon": "💾",
+      "description": "Local data storage and caching",
+      "fields": [
+        {
+          "key": "storage.key_value",
+          "label": "Key-Value Storage",
+          "type": "select",
+          "options": [
+            { "value": "mmkv", "label": "MMKV (Fast, Recommended)" },
+            { "value": "async_storage", "label": "AsyncStorage" },
+            { "value": "secure_store", "label": "Expo Secure Store" },
+            { "value": "watermelondb", "label": "WatermelonDB" },
+            { "value": "none", "label": "None" }
+          ],
+          "default": "mmkv"
+        },
+        {
+          "key": "storage.database",
+          "label": "Local Database",
+          "type": "select",
+          "options": [
+            { "value": "watermelondb", "label": "WatermelonDB (SQLite)" },
+            { "value": "sqlite", "label": "SQLite (expo-sqlite)" },
+            { "value": "realm", "label": "Realm" },
+            { "value": "pouchdb", "label": "PouchDB" },
+            { "value": "none", "label": "None" }
+          ],
+          "default": "none"
+        },
+        {
+          "key": "storage.secure_storage",
+          "label": "Secure Storage for Secrets",
+          "type": "checkbox",
+          "default": true,
+          "description": "Store tokens and secrets securely (Keychain/Keystore)"
+        },
+        {
+          "key": "storage.offline_cache",
+          "label": "Offline Data Cache",
+          "type": "checkbox",
+          "default": false,
+          "description": "Cache API responses for offline use"
+        },
+        {
+          "key": "storage.file_storage",
+          "label": "File Storage",
+          "type": "select",
+          "options": [
+            { "value": "expo_file_system", "label": "Expo FileSystem" },
+            { "value": "rnfs", "label": "React Native FS" },
+            { "value": "none", "label": "None" }
+          ],
+          "default": "expo_file_system"
+        },
+        {
+          "key": "storage.image_cache",
+          "label": "Image Caching",
+          "type": "checkbox",
+          "default": true,
+          "description": "Cache images for faster loading"
+        }
+      ]
+    },
+    {
+      "title": "Forms & Validation",
+      "icon": "📝",
+      "description": "Form handling and input validation",
+      "fields": [
+        {
+          "key": "forms.library",
+          "label": "Form Library",
+          "type": "select",
+          "options": [
+            { "value": "react_hook_form", "label": "React Hook Form" },
+            { "value": "formik", "label": "Formik" },
+            { "value": "final_form", "label": "Final Form" },
+            { "value": "custom", "label": "Custom (useState)" }
+          ],
+          "default": "react_hook_form"
+        },
+        {
+          "key": "forms.validation",
+          "label": "Validation Library",
+          "type": "select",
+          "options": [
+            { "value": "zod", "label": "Zod" },
+            { "value": "yup", "label": "Yup" },
+            { "value": "valibot", "label": "Valibot" },
+            { "value": "custom", "label": "Custom Validation" }
+          ],
+          "default": "zod"
+        },
+        {
+          "key": "forms.keyboard_handling",
+          "label": "Keyboard Handling",
+          "type": "checkbox",
+          "default": true,
+          "description": "KeyboardAvoidingView and scroll to focused input"
+        },
+        {
+          "key": "forms.input_masking",
+          "label": "Input Masking",
+          "type": "checkbox",
+          "default": false,
+          "description": "Phone number, credit card, date masks"
+        },
+        {
+          "key": "forms.autocomplete",
+          "label": "Autocomplete / Typeahead",
+          "type": "checkbox",
+          "default": false,
+          "description": "Search suggestions while typing"
+        }
+      ]
+    },
+    {
+      "title": "Performance",
+      "icon": "🚀",
+      "description": "Performance optimization strategies",
+      "fields": [
+        {
+          "key": "perf.hermes",
+          "label": "Hermes JavaScript Engine",
+          "type": "checkbox",
+          "default": true,
+          "description": "Faster startup and lower memory usage"
+        },
+        {
+          "key": "perf.new_architecture",
+          "label": "New Architecture (Fabric + TurboModules)",
+          "type": "checkbox",
+          "default": true,
+          "description": "Better performance and interoperability"
+        },
+        {
+          "key": "perf.lazy_loading",
+          "label": "Lazy Loading Screens",
+          "type": "checkbox",
+          "default": true,
+          "description": "Load screens on demand"
+        },
+        {
+          "key": "perf.image_optimization",
+          "label": "Image Optimization",
+          "type": "checkbox",
+          "default": true,
+          "description": "Use optimized image formats and caching"
+        },
+        {
+          "key": "perf.list_virtualization",
+          "label": "List Virtualization",
+          "type": "checkbox",
+          "default": true,
+          "description": "FlashList / FlatList for long lists"
+        },
+        {
+          "key": "perf.memoization",
+          "label": "Memoization Strategy",
+          "type": "select",
+          "options": [
+            {
+              "value": "react_memo",
+              "label": "React.memo + useMemo + useCallback"
+            },
+            {
+              "value": "selective",
+              "label": "Selective (Only heavy components)"
+            },
+            { "value": "none", "label": "None" }
+          ],
+          "default": "selective"
+        },
+        {
+          "key": "perf.bundle_analysis",
+          "label": "Bundle Size Analysis",
+          "type": "checkbox",
+          "default": true,
+          "description": "Analyze and optimize bundle size"
+        },
+        {
+          "key": "perf.startup_time",
+          "label": "Startup Time Target",
+          "type": "select",
+          "options": [
+            { "value": "instant", "label": "< 500ms (Instant)" },
+            { "value": "fast", "label": "< 1s (Fast)" },
+            { "value": "acceptable", "label": "< 3s (Acceptable)" },
+            { "value": "no_target", "label": "No Specific Target" }
+          ],
+          "default": "fast"
+        },
+        {
+          "key": "perf.fps_target",
+          "label": "Frame Rate Target",
+          "type": "select",
+          "options": [
+            { "value": "60", "label": "60 FPS" },
+            { "value": "120", "label": "120 FPS (ProMotion)" },
+            { "value": "adaptive", "label": "Adaptive" }
+          ],
+          "default": "60"
+        },
+        {
+          "key": "perf.memory_management",
+          "label": "Memory Optimization",
+          "type": "checkbox",
+          "default": true,
+          "description": "Avoid memory leaks, clean up listeners"
+        }
+      ]
+    },
+    {
+      "title": "Testing",
+      "icon": "🧪",
+      "description": "Testing strategy and quality assurance",
+      "fields": [
+        {
+          "key": "test.unit",
+          "label": "Unit Testing Framework",
+          "type": "select",
+          "options": [
+            { "value": "jest", "label": "Jest" },
+            { "value": "vitest", "label": "Vitest" },
+            { "value": "none", "label": "None" }
+          ],
+          "default": "jest"
+        },
+        {
+          "key": "test.component",
+          "label": "Component Testing",
+          "type": "select",
+          "options": [
+            {
+              "value": "rn_testing_library",
+              "label": "React Native Testing Library"
+            },
+            { "value": "enzyme", "label": "Enzyme" },
+            { "value": "none", "label": "None" }
+          ],
+          "default": "rn_testing_library"
+        },
+        {
+          "key": "test.e2e",
+          "label": "E2E Testing Framework",
+          "type": "select",
+          "options": [
+            { "value": "maestro", "label": "Maestro" },
+            { "value": "detox", "label": "Detox" },
+            { "value": "appium", "label": "Appium" },
+            { "value": "none", "label": "None" }
+          ],
+          "default": "maestro"
+        },
+        {
+          "key": "test.coverage_target",
+          "label": "Code Coverage Target",
+          "type": "select",
+          "options": [
+            { "value": "60", "label": "60%" },
+            { "value": "70", "label": "70%" },
+            { "value": "80", "label": "80%" },
+            { "value": "90", "label": "90%+" }
+          ],
+          "default": "70"
+        },
+        {
+          "key": "test.visual_regression",
+          "label": "Visual Regression Testing",
+          "type": "checkbox",
+          "default": false,
+          "description": "Screenshot comparison for UI changes"
+        },
+        {
+          "key": "test.mocking",
+          "label": "Mocking Framework",
+          "type": "select",
+          "options": [
+            { "value": "jest_mock", "label": "Jest Mock" },
+            { "value": "msw", "label": "MSW (Mock Service Worker)" },
+            { "value": "custom", "label": "Custom Mocks" },
+            { "value": "none", "label": "None" }
+          ],
+          "default": "jest_mock"
+        },
+        {
+          "key": "test.device_farm",
+          "label": "Device Farm Testing",
+          "type": "checkbox",
+          "default": false,
+          "description": "Test on real devices (BrowserStack, AWS Device Farm)"
+        }
+      ]
+    },
+    {
+      "title": "CI/CD & Deployment",
+      "icon": "🔄",
+      "description": "Build automation and app store deployment",
+      "fields": [
+        {
+          "key": "deploy.ci_platform",
+          "label": "CI/CD Platform",
+          "type": "select",
+          "options": [
+            { "value": "github_actions", "label": "GitHub Actions" },
+            { "value": "gitlab_ci", "label": "GitLab CI" },
+            { "value": "bitbucket", "label": "Bitbucket Pipelines" },
+            { "value": "circleci", "label": "CircleCI" },
+            { "value": "none", "label": "None" }
+          ],
+          "default": "github_actions"
+        },
+        {
+          "key": "deploy.build_tool",
+          "label": "Build Tool",
+          "type": "select",
+          "options": [
+            { "value": "eas_build", "label": "EAS Build (Expo)" },
+            { "value": "fastlane", "label": "Fastlane" },
+            { "value": "codemagic", "label": "Codemagic" },
+            { "value": "appcenter", "label": "App Center" },
+            { "value": "bitrise", "label": "Bitrise" },
+            { "value": "manual", "label": "Manual (Xcode / Android Studio)" }
+          ],
+          "default": "eas_build"
+        },
+        {
+          "key": "deploy.ios_distribution",
+          "label": "iOS Distribution",
+          "type": "select",
+          "options": [
+            { "value": "app_store", "label": "App Store Connect" },
+            { "value": "testflight", "label": "TestFlight (Beta)" },
+            { "value": "enterprise", "label": "Enterprise Distribution" },
+            { "value": "adhoc", "label": "Ad Hoc" }
+          ],
+          "default": "app_store"
+        },
+        {
+          "key": "deploy.android_distribution",
+          "label": "Android Distribution",
+          "type": "select",
+          "options": [
+            { "value": "play_store", "label": "Google Play Store" },
+            {
+              "value": "play_internal",
+              "label": "Play Store Internal Testing"
+            },
+            { "value": "apk_direct", "label": "Direct APK Distribution" },
+            { "value": "huawei", "label": "Huawei AppGallery" }
+          ],
+          "default": "play_store"
+        },
+        {
+          "key": "deploy.ota_updates",
+          "label": "OTA Updates (Code Push)",
+          "type": "select",
+          "options": [
+            { "value": "expo_updates", "label": "Expo Updates" },
+            { "value": "codepush", "label": "Microsoft CodePush" },
+            { "value": "custom", "label": "Custom OTA Solution" },
+            { "value": "none", "label": "None" }
+          ],
+          "default": "expo_updates"
+        },
+        {
+          "key": "deploy.versioning",
+          "label": "Versioning Scheme",
+          "type": "select",
+          "options": [
+            { "value": "semver", "label": "Semantic Versioning (1.2.3)" },
+            { "value": "calver", "label": "Calendar Versioning (2024.1)" },
+            { "value": "build_number", "label": "Build Number Increment" }
+          ],
+          "default": "semver"
+        },
+        {
+          "key": "deploy.beta_testing",
+          "label": "Beta Testing",
+          "type": "checkbox",
+          "default": true,
+          "description": "Distribute beta builds to testers"
+        },
+        {
+          "key": "deploy.staged_rollout",
+          "label": "Staged Rollout",
+          "type": "checkbox",
+          "default": true,
+          "description": "Gradual rollout to percentage of users"
+        }
+      ]
+    },
+    {
+      "title": "Monitoring & Analytics",
+      "icon": "📊",
+      "description": "Crash reporting, analytics, and performance monitoring",
+      "fields": [
+        {
+          "key": "monitor.crash_reporting",
+          "label": "Crash Reporting",
+          "type": "select",
+          "options": [
+            { "value": "sentry", "label": "Sentry" },
+            {
+              "value": "firebase_crashlytics",
+              "label": "Firebase Crashlytics"
+            },
+            { "value": "bugsnag", "label": "Bugsnag" },
+            { "value": "instabug", "label": "Instabug" },
+            { "value": "none", "label": "None" }
+          ],
+          "default": "sentry"
+        },
+        {
+          "key": "monitor.analytics",
+          "label": "Analytics Platform",
+          "type": "select",
+          "options": [
+            { "value": "firebase_analytics", "label": "Firebase Analytics" },
+            { "value": "amplitude", "label": "Amplitude" },
+            { "value": "mixpanel", "label": "Mixpanel" },
+            { "value": "posthog", "label": "PostHog" },
+            { "value": "segment", "label": "Segment" },
+            { "value": "none", "label": "None" }
+          ],
+          "default": "firebase_analytics"
+        },
+        {
+          "key": "monitor.performance_monitoring",
+          "label": "Performance Monitoring",
+          "type": "select",
+          "options": [
+            { "value": "firebase_perf", "label": "Firebase Performance" },
+            { "value": "sentry_perf", "label": "Sentry Performance" },
+            { "value": "datadog", "label": "Datadog" },
+            { "value": "none", "label": "None" }
+          ],
+          "default": "firebase_perf"
+        },
+        {
+          "key": "monitor.feature_flags",
+          "label": "Feature Flags",
+          "type": "select",
+          "options": [
+            {
+              "value": "firebase_remote_config",
+              "label": "Firebase Remote Config"
+            },
+            { "value": "launchdarkly", "label": "LaunchDarkly" },
+            { "value": "posthog_flags", "label": "PostHog Feature Flags" },
+            { "value": "custom", "label": "Custom Implementation" },
+            { "value": "none", "label": "None" }
+          ],
+          "default": "none"
+        },
+        {
+          "key": "monitor.a_b_testing",
+          "label": "A/B Testing",
+          "type": "checkbox",
+          "default": false,
+          "description": "Run A/B tests on features"
+        },
+        {
+          "key": "monitor.user_feedback",
+          "label": "In-App User Feedback",
+          "type": "checkbox",
+          "default": false,
+          "description": "Collect user feedback within the app"
+        }
+      ]
+    },
+    {
+      "title": "Security",
+      "icon": "🔒",
+      "description": "Security hardening and best practices",
+      "fields": [
+        {
+          "key": "sec.certificate_pinning",
+          "label": "SSL Certificate Pinning",
+          "type": "checkbox",
+          "default": false,
+          "description": "Pin API certificates to prevent MITM attacks"
+        },
+        {
+          "key": "sec.root_detection",
+          "label": "Root / Jailbreak Detection",
+          "type": "checkbox",
+          "default": false,
+          "description": "Detect rooted/jailbroken devices"
+        },
+        {
+          "key": "sec.code_obfuscation",
+          "label": "Code Obfuscation",
+          "type": "checkbox",
+          "default": false,
+          "description": "Obfuscate JavaScript bundle"
+        },
+        {
+          "key": "sec.encryption",
+          "label": "Data Encryption at Rest",
+          "type": "checkbox",
+          "default": true,
+          "description": "Encrypt sensitive local data"
+        },
+        {
+          "key": "sec.secure_storage",
+          "label": "Secure Storage for Secrets",
+          "type": "checkbox",
+          "default": true,
+          "description": "Use Keychain/Keystore for sensitive data"
+        },
+        {
+          "key": "sec.biometric_auth",
+          "label": "Biometric Authentication",
+          "type": "checkbox",
+          "default": false,
+          "description": "Require biometric for sensitive actions"
+        },
+        {
+          "key": "sec.screenshot_prevention",
+          "label": "Screenshot Prevention",
+          "type": "checkbox",
+          "default": false,
+          "description": "Block screenshots on sensitive screens"
+        },
+        {
+          "key": "sec.dependency_audit",
+          "label": "Dependency Security Audit",
+          "type": "checkbox",
+          "default": true,
+          "description": "Run npm audit / Snyk in CI pipeline"
+        },
+        {
+          "key": "sec.rate_limiting",
+          "label": "API Rate Limiting",
+          "type": "checkbox",
+          "default": true,
+          "description": "Limit API calls to prevent abuse"
+        }
+      ]
+    },
+    {
+      "title": "Internationalization",
+      "icon": "🌍",
+      "description": "Multi-language support and localization",
+      "fields": [
+        {
+          "key": "i18n.enabled",
+          "label": "Internationalization Enabled",
+          "type": "checkbox",
+          "default": false,
+          "description": "Support multiple languages"
+        },
+        {
+          "key": "i18n.library",
+          "label": "i18n Library",
+          "type": "select",
+          "options": [
+            { "value": "i18next", "label": "i18next + react-i18next" },
+            { "value": "lingui", "label": "Lingui" },
+            { "value": "formatjs", "label": "FormatJS (react-intl)" },
+            { "value": "expo_localization", "label": "Expo Localization" },
+            { "value": "none", "label": "None" }
+          ],
+          "default": "i18next"
+        },
+        {
+          "key": "i18n.languages",
+          "label": "Supported Languages",
+          "type": "list_builder",
+          "placeholder": "e.g., en-US - English (United States)",
+          "default": []
+        },
+        {
+          "key": "i18n.rtl_support",
+          "label": "RTL (Right-to-Left) Support",
+          "type": "checkbox",
+          "default": false,
+          "description": "Support Arabic, Hebrew, etc."
+        },
+        {
+          "key": "i18n.date_format",
+          "label": "Locale-Aware Date/Time",
+          "type": "checkbox",
+          "default": false,
+          "description": "Format dates based on user locale"
+        },
+        {
+          "key": "i18n.currency",
+          "label": "Locale-Aware Currency",
+          "type": "checkbox",
+          "default": false,
+          "description": "Format currency based on locale"
+        }
+      ]
+    },
+    {
+      "title": "Documentation",
+      "icon": "📚",
+      "description": "User and developer documentation",
+      "fields": [
+        {
+          "key": "docs.readme",
+          "label": "Comprehensive README",
+          "type": "checkbox",
+          "default": true,
+          "description": "Setup, build, and usage instructions"
+        },
+        {
+          "key": "docs.developer_guide",
+          "label": "Developer Guide",
+          "type": "checkbox",
+          "default": true,
+          "description": "Architecture, code structure, contribution guide"
+        },
+        {
+          "key": "docs.onboarding_guide",
+          "label": "Developer Onboarding Guide",
+          "type": "checkbox",
+          "default": true,
+          "description": "Step-by-step setup for new team members"
+        },
+        {
+          "key": "docs.api_docs",
+          "label": "API Documentation",
+          "type": "select",
+          "options": [
+            { "value": "openapi", "label": "OpenAPI / Swagger" },
+            { "value": "markdown", "label": "Markdown API Docs" },
+            { "value": "none", "label": "None" }
+          ],
+          "default": "openapi"
+        },
+        {
+          "key": "docs.architecture_diagram",
+          "label": "Architecture Diagram",
+          "type": "checkbox",
+          "default": true,
+          "description": "Visual diagram of app architecture"
+        },
+        {
+          "key": "docs.changelog",
+          "label": "CHANGELOG",
+          "type": "checkbox",
+          "default": true,
+          "description": "Track changes between versions"
+        },
+        {
+          "key": "docs.contributing",
+          "label": "CONTRIBUTING.md",
+          "type": "checkbox",
+          "default": true,
+          "description": "Contribution guidelines and PR process"
+        },
+        {
+          "key": "docs.license",
+          "label": "License File",
+          "type": "select",
+          "options": [
+            { "value": "mit", "label": "MIT" },
+            { "value": "apache2", "label": "Apache 2.0" },
+            { "value": "gpl3", "label": "GPL 3.0" },
+            { "value": "proprietary", "label": "Proprietary" },
+            { "value": "none", "label": "None" }
+          ],
+          "default": "mit"
+        },
+        {
+          "key": "docs.inline_comments",
+          "label": "Inline Code Documentation",
+          "type": "select",
+          "options": [
+            { "value": "jsdoc", "label": "JSDoc Comments" },
+            { "value": "minimal", "label": "Minimal (Complex logic only)" },
+            { "value": "extensive", "label": "Extensive (All public APIs)" }
+          ],
+          "default": "jsdoc"
+        },
+        {
+          "key": "docs.env_template",
+          "label": ".env.example Template",
+          "type": "checkbox",
+          "default": true,
+          "description": "Document all required environment variables"
+        },
+        {
+          "key": "docs.runbook",
+          "label": "Operations Runbook",
+          "type": "checkbox",
+          "default": true,
+          "description": "Deployment, troubleshooting, incident response"
+        }
+      ]
+    },
+    {
+      "title": "Team & Code Style",
+      "icon": "👥",
+      "description": "Team collaboration and coding standards",
+      "fields": [
+        {
+          "key": "team.code_style",
+          "label": "Code Style Guide",
+          "type": "select",
+          "options": [
+            { "value": "prettier", "label": "Prettier + ESLint" },
+            { "value": "biome", "label": "Biome (Rust-based linter)" },
+            { "value": "eslint_only", "label": "ESLint Only" },
+            { "value": "custom", "label": "Custom Rules" }
+          ],
+          "default": "prettier"
+        },
+        {
+          "key": "team.branch_strategy",
+          "label": "Git Branch Strategy",
+          "type": "select",
+          "options": [
+            { "value": "trunk_based", "label": "Trunk-Based Development" },
+            { "value": "gitflow", "label": "Git Flow" },
+            { "value": "feature_branch", "label": "Feature Branch Workflow" },
+            { "value": "github_flow", "label": "GitHub Flow" }
+          ],
+          "default": "github_flow"
+        },
+        {
+          "key": "team.pr_review",
+          "label": "Pull Request Reviews",
+          "type": "checkbox",
+          "default": true,
+          "description": "Require code review before merging"
+        },
+        {
+          "key": "team.commit_convention",
+          "label": "Commit Message Convention",
+          "type": "select",
+          "options": [
+            { "value": "conventional", "label": "Conventional Commits" },
+            { "value": "angular", "label": "Angular Style" },
+            { "value": "freeform", "label": "Free-form" },
+            { "value": "none", "label": "None" }
+          ],
+          "default": "conventional"
+        },
+        {
+          "key": "team.husky_hooks",
+          "label": "Git Hooks (Husky)",
+          "type": "checkbox",
+          "default": true,
+          "description": "Pre-commit linting and formatting"
+        },
+        {
+          "key": "team.naming_convention",
+          "label": "Naming Convention",
+          "type": "select",
+          "options": [
+            {
+              "value": "react_standard",
+              "label": "React Standard (PascalCase components, camelCase files)"
+            },
+            { "value": "kebab_case", "label": "kebab-case files" },
+            { "value": "custom", "label": "Custom Convention" }
+          ],
+          "default": "react_standard"
+        },
+        {
+          "key": "team.component_structure",
+          "label": "Component File Structure",
+          "type": "select",
+          "options": [
+            {
+              "value": "single_file",
+              "label": "Single File (Component + Styles)"
+            },
+            {
+              "value": "folder_per_component",
+              "label": "Folder per Component (index.tsx, styles.ts)"
+            },
+            { "value": "grouped", "label": "Grouped by Feature" }
+          ],
+          "default": "folder_per_component"
+        }
+      ]
+    },
+    {
+      "title": "Generate Prompt",
+      "icon": "🚀",
+      "description": "Generate the final development prompt",
+      "fields": [
+        {
+          "key": "actions.generate_copy",
+          "label": "Generate Prompt",
+          "type": "action_button",
+          "button_text": "🚀 Generate & Copy to Clipboard",
+          "action": "generate_copy"
+        }
+      ]
+    }
+  ]
+}

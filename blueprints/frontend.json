@@ -1,0 +1,803 @@
+{
+  "name": "Frontend Application",
+  "description": "Modern React frontend with full-stack capabilities",
+  "icon": "🎨",
+  "sections": [
+    {
+      "title": "Project Overview",
+      "icon": "📋",
+      "description": "Basic project information",
+      "fields": [
+        {
+          "key": "project.name",
+          "label": "Project Name",
+          "type": "text",
+          "required": true,
+          "placeholder": "e.g., Dashboard UI"
+        },
+        {
+          "key": "project.description",
+          "label": "Description",
+          "type": "textarea",
+          "placeholder": "Describe what your frontend application does, its target users, and main features"
+        },
+        {
+          "key": "project.type",
+          "label": "Project Type",
+          "type": "select",
+          "options": [
+            { "value": "spa", "label": "Single Page Application (SPA)" },
+            { "value": "ssr", "label": "Server-Side Rendered (SSR)" },
+            { "value": "ssg", "label": "Static Site Generation (SSG)" },
+            {
+              "value": "isr",
+              "label": "Incremental Static Regeneration (ISR)"
+            },
+            { "value": "pwa", "label": "Progressive Web App (PWA)" }
+          ],
+          "default": "spa"
+        },
+        {
+          "key": "project.target_users",
+          "label": "Target Users",
+          "type": "text",
+          "placeholder": "e.g., Internal team, B2B customers, Public users"
+        }
+      ]
+    },
+    {
+      "title": "Technology Stack",
+      "icon": "⚙️",
+      "description": "Core technologies and build tools",
+      "fields": [
+        {
+          "key": "tech.react_version",
+          "label": "React Version",
+          "type": "select",
+          "options": [
+            { "value": "19", "label": "React 19 (Latest)" },
+            { "value": "18", "label": "React 18 (Stable)" },
+            { "value": "17", "label": "React 17 (Legacy)" }
+          ],
+          "default": "19"
+        },
+        {
+          "key": "tech.language",
+          "label": "Language",
+          "type": "select",
+          "options": [
+            { "value": "typescript", "label": "TypeScript" },
+            { "value": "javascript", "label": "JavaScript" }
+          ],
+          "default": "javascript"
+        },
+        {
+          "key": "tech.build_tool",
+          "label": "Build Tool",
+          "type": "select",
+          "options": [
+            { "value": "vite", "label": "Vite" },
+            { "value": "nextjs", "label": "Next.js" },
+            { "value": "remix", "label": "Remix" },
+            { "value": "webpack", "label": "Webpack (CRA)" },
+            { "value": "turbopack", "label": "Turbopack" }
+          ],
+          "default": "vite"
+        },
+        {
+          "key": "tech.package_manager",
+          "label": "Package Manager",
+          "type": "select",
+          "options": [
+            { "value": "npm", "label": "npm" },
+            { "value": "yarn", "label": "Yarn" },
+            { "value": "pnpm", "label": "pnpm" },
+            { "value": "bun", "label": "Bun" }
+          ],
+          "default": "npm"
+        },
+        {
+          "key": "tech.node_version",
+          "label": "Node.js Version",
+          "type": "select",
+          "options": [
+            { "value": "24", "label": "Node 24 (LTS)" },
+            { "value": "22", "label": "Node 22 (LTS)" },
+            { "value": "20", "label": "Node 20 (LTS)" },
+            { "value": "18", "label": "Node 18" }
+          ],
+          "default": "24"
+        },
+        {
+          "key": "tech.additional_deps",
+          "label": "Search & Add npm Packages",
+          "type": "crate_search",
+          "target_list_key": "tech.additional_packages",
+          "registry": "npm",
+          "placeholder": "Type package name (e.g., axios, zustand, framer-motion)"
+        },
+        {
+          "key": "tech.additional_packages",
+          "label": "Additional Packages",
+          "type": "multiselect",
+          "hidden": true,
+          "default": []
+        }
+      ]
+    },
+    {
+      "title": "UI & Styling",
+      "icon": "🎨",
+      "description": "Component library and styling approach",
+      "fields": [
+        {
+          "key": "ui.component_library",
+          "label": "Component Library",
+          "type": "select",
+          "options": [
+            { "value": "none", "label": "None (Custom Components)" },
+            { "value": "mui", "label": "Material UI (MUI)" },
+            { "value": "antd", "label": "Ant Design" },
+            { "value": "chakra", "label": "Chakra UI" },
+            { "value": "shadcn", "label": "shadcn/ui" },
+            { "value": "mantine", "label": "Mantine" },
+            { "value": "radix", "label": "Radix UI" },
+            { "value": "headless", "label": "Headless UI" }
+          ],
+          "default": "shadcn"
+        },
+        {
+          "key": "ui.styling_approach",
+          "label": "Styling Approach",
+          "type": "select",
+          "options": [
+            { "value": "tailwind", "label": "Tailwind CSS" },
+            { "value": "css_modules", "label": "CSS Modules" },
+            { "value": "styled_components", "label": "Styled Components" },
+            { "value": "emotion", "label": "Emotion" },
+            { "value": "sass", "label": "SASS/SCSS" },
+            { "value": "vanilla_css", "label": "Vanilla CSS" }
+          ],
+          "default": "tailwind"
+        },
+        {
+          "key": "ui.dark_mode",
+          "label": "Dark Mode Support",
+          "type": "checkbox",
+          "default": true
+        },
+        {
+          "key": "ui.responsive",
+          "label": "Responsive Design",
+          "type": "checkbox",
+          "default": true
+        },
+        {
+          "key": "ui.animations",
+          "label": "Animation Library",
+          "type": "select",
+          "options": [
+            { "value": "none", "label": "None" },
+            { "value": "framer_motion", "label": "Framer Motion" },
+            { "value": "react_spring", "label": "React Spring" },
+            { "value": "gsap", "label": "GSAP" },
+            { "value": "css_only", "label": "CSS Transitions Only" }
+          ],
+          "default": "framer_motion"
+        },
+        {
+          "key": "ui.icons",
+          "label": "Icon Library",
+          "type": "select",
+          "options": [
+            { "value": "lucide", "label": "Lucide React" },
+            { "value": "heroicons", "label": "Heroicons" },
+            { "value": "feather", "label": "Feather Icons" },
+            { "value": "font_awesome", "label": "Font Awesome" },
+            { "value": "react_icons", "label": "React Icons" },
+            { "value": "none", "label": "None" }
+          ],
+          "default": "lucide"
+        }
+      ]
+    },
+    {
+      "title": "State Management",
+      "icon": "🔄",
+      "description": "Data flow and state architecture",
+      "fields": [
+        {
+          "key": "state.global_solution",
+          "label": "Global State Management",
+          "type": "select",
+          "options": [
+            { "value": "zustand", "label": "Zustand" },
+            { "value": "redux_toolkit", "label": "Redux Toolkit" },
+            { "value": "jotai", "label": "Jotai" },
+            { "value": "recoil", "label": "Recoil" },
+            { "value": "mobx", "label": "MobX" },
+            { "value": "context", "label": "React Context API" },
+            { "value": "none", "label": "None (Props drilling)" }
+          ],
+          "default": "zustand"
+        },
+        {
+          "key": "state.server_state",
+          "label": "Server State / Data Fetching",
+          "type": "select",
+          "options": [
+            {
+              "value": "tanstack_query",
+              "label": "TanStack Query (React Query)"
+            },
+            { "value": "swr", "label": "SWR" },
+            { "value": "apollo", "label": "Apollo Client (GraphQL)" },
+            { "value": "rtk_query", "label": "RTK Query" },
+            { "value": "fetch", "label": "Native Fetch + Custom Hooks" }
+          ],
+          "default": "tanstack_query"
+        },
+        {
+          "key": "state.local_state",
+          "label": "Local State Approach",
+          "type": "select",
+          "options": [
+            { "value": "use_state", "label": "useState + useReducer" },
+            { "value": "use_context", "label": "Context + Reducer Pattern" },
+            {
+              "value": "external_store",
+              "label": "External Store (Zustand/Jotai)"
+            }
+          ],
+          "default": "use_state"
+        },
+        {
+          "key": "state.url_state",
+          "label": "URL State Management",
+          "type": "checkbox",
+          "default": true,
+          "description": "Sync filters, pagination, and search params with URL"
+        }
+      ]
+    },
+    {
+      "title": "Routing",
+      "icon": "🗺️",
+      "description": "Navigation and route structure",
+      "fields": [
+        {
+          "key": "routing.library",
+          "label": "Routing Library",
+          "type": "select",
+          "options": [
+            { "value": "react_router", "label": "React Router v7" },
+            { "value": "tanstack_router", "label": "TanStack Router" },
+            { "value": "nextjs_router", "label": "Next.js App Router" },
+            { "value": "remix_router", "label": "Remix Router" },
+            { "value": "wouter", "label": "Wouter (Lightweight)" }
+          ],
+          "default": "react_router"
+        },
+        {
+          "key": "routing.routes",
+          "label": "Routes",
+          "type": "list_builder",
+          "placeholder": "e.g., /dashboard - Main dashboard view",
+          "default": []
+        },
+        {
+          "key": "routing.lazy_loading",
+          "label": "Lazy Loading Routes",
+          "type": "checkbox",
+          "default": true,
+          "description": "Code-split routes for better performance"
+        },
+        {
+          "key": "routing.protected_routes",
+          "label": "Protected Routes",
+          "type": "checkbox",
+          "default": true,
+          "description": "Require authentication for certain routes"
+        },
+        {
+          "key": "routing.breadcrumbs",
+          "label": "Breadcrumb Navigation",
+          "type": "checkbox",
+          "default": false
+        }
+      ]
+    },
+    {
+      "title": "Data & API",
+      "icon": "🌐",
+      "description": "API integration and data handling",
+      "fields": [
+        {
+          "key": "api.base_url",
+          "label": "API Base URL",
+          "type": "text",
+          "placeholder": "e.g., https://api.example.com/v1"
+        },
+        {
+          "key": "api.client",
+          "label": "HTTP Client",
+          "type": "select",
+          "options": [
+            { "value": "axios", "label": "Axios" },
+            { "value": "fetch", "label": "Native Fetch" },
+            { "value": "ky", "label": "Ky" },
+            { "value": "graphql", "label": "GraphQL Client" }
+          ],
+          "default": "axios"
+        },
+        {
+          "key": "api.auth_header",
+          "label": "Auth Header Format",
+          "type": "select",
+          "options": [
+            { "value": "bearer", "label": "Bearer Token" },
+            { "value": "cookie", "label": "Cookie-based" },
+            { "value": "custom", "label": "Custom Header" },
+            { "value": "none", "label": "No Authentication" }
+          ],
+          "default": "bearer"
+        },
+        {
+          "key": "api.endpoints",
+          "label": "API Endpoints",
+          "type": "list_builder",
+          "placeholder": "e.g., GET /users - Fetch user list",
+          "default": []
+        },
+        {
+          "key": "api.error_handling",
+          "label": "Error Handling Strategy",
+          "type": "select",
+          "options": [
+            { "value": "toast", "label": "Toast Notifications" },
+            { "value": "inline", "label": "Inline Error Messages" },
+            { "value": "error_boundary", "label": "Error Boundaries" },
+            { "value": "combined", "label": "Combined (Toast + Boundary)" }
+          ],
+          "default": "combined"
+        },
+        {
+          "key": "api.caching",
+          "label": "Response Caching",
+          "type": "checkbox",
+          "default": true,
+          "description": "Cache API responses to reduce network calls"
+        },
+        {
+          "key": "api.optimistic_updates",
+          "label": "Optimistic Updates",
+          "type": "checkbox",
+          "default": true,
+          "description": "Update UI immediately before server confirmation"
+        }
+      ]
+    },
+    {
+      "title": "Forms & Validation",
+      "icon": "📝",
+      "description": "Form handling and input validation",
+      "fields": [
+        {
+          "key": "forms.library",
+          "label": "Form Library",
+          "type": "select",
+          "options": [
+            { "value": "react_hook_form", "label": "React Hook Form" },
+            { "value": "formik", "label": "Formik" },
+            { "value": "final_form", "label": "Final Form" },
+            { "value": "custom", "label": "Custom (useState)" }
+          ],
+          "default": "react_hook_form"
+        },
+        {
+          "key": "forms.validation",
+          "label": "Validation Library",
+          "type": "select",
+          "options": [
+            { "value": "zod", "label": "Zod" },
+            { "value": "yup", "label": "Yup" },
+            { "value": "valibot", "label": "Valibot" },
+            { "value": "custom", "label": "Custom Validation" }
+          ],
+          "default": "zod"
+        },
+        {
+          "key": "forms.complex_forms",
+          "label": "Complex Form Features",
+          "type": "multiselect",
+          "options": [
+            { "value": "multi_step", "label": "Multi-step Forms" },
+            { "value": "dynamic_fields", "label": "Dynamic Fields" },
+            { "value": "file_upload", "label": "File Upload" },
+            { "value": "autosave", "label": "Auto-save Drafts" },
+            { "value": "conditional", "label": "Conditional Fields" }
+          ],
+          "default": []
+        }
+      ]
+    },
+    {
+      "title": "Authentication",
+      "icon": "🔐",
+      "description": "User authentication and authorization",
+      "fields": [
+        {
+          "key": "auth.method",
+          "label": "Authentication Method",
+          "type": "select",
+          "options": [
+            { "value": "jwt", "label": "JWT Tokens" },
+            { "value": "session", "label": "Session-based" },
+            { "value": "oauth2", "label": "OAuth2 / OpenID Connect" },
+            { "value": "magic_link", "label": "Magic Link / Passwordless" },
+            { "value": "none", "label": "No Authentication" }
+          ],
+          "default": "jwt"
+        },
+        {
+          "key": "auth.providers",
+          "label": "Social Login Providers",
+          "type": "multiselect",
+          "options": [
+            { "value": "google", "label": "Google" },
+            { "value": "github", "label": "GitHub" },
+            { "value": "microsoft", "label": "Microsoft" },
+            { "value": "apple", "label": "Apple" },
+            { "value": "facebook", "label": "Facebook" }
+          ],
+          "default": []
+        },
+        {
+          "key": "auth.token_storage",
+          "label": "Token Storage",
+          "type": "select",
+          "options": [
+            {
+              "value": "http_only_cookie",
+              "label": "HTTP-Only Cookie (Secure)"
+            },
+            { "value": "local_storage", "label": "Local Storage" },
+            { "value": "session_storage", "label": "Session Storage" },
+            { "value": "memory", "label": "In-Memory Only" }
+          ],
+          "default": "http_only_cookie"
+        },
+        {
+          "key": "auth.refresh_token",
+          "label": "Token Refresh",
+          "type": "checkbox",
+          "default": true,
+          "description": "Automatically refresh expired tokens"
+        },
+        {
+          "key": "auth.rbac",
+          "label": "Role-Based Access Control",
+          "type": "checkbox",
+          "default": false,
+          "description": "Different permissions for different user roles"
+        }
+      ]
+    },
+    {
+      "title": "Features & Pages",
+      "icon": "⚡",
+      "description": "Core features and page structure",
+      "fields": [
+        {
+          "key": "features.list",
+          "label": "Features",
+          "type": "list_builder",
+          "placeholder": "Type a feature and press Add",
+          "default": []
+        },
+        {
+          "key": "features.pages",
+          "label": "Pages",
+          "type": "list_builder",
+          "placeholder": "e.g., /login - User login page",
+          "default": []
+        },
+        {
+          "key": "features.components",
+          "label": "Reusable Components",
+          "type": "list_builder",
+          "placeholder": "e.g., DataTable - Sortable data table with pagination",
+          "default": []
+        },
+        {
+          "key": "features.notifications",
+          "label": "Notification System",
+          "type": "select",
+          "options": [
+            { "value": "toast", "label": "Toast Notifications" },
+            { "value": "banner", "label": "Banner Alerts" },
+            { "value": "modal", "label": "Modal Dialogs" },
+            { "value": "none", "label": "None" }
+          ],
+          "default": "toast"
+        },
+        {
+          "key": "features.search",
+          "label": "Search Functionality",
+          "type": "checkbox",
+          "default": false
+        },
+        {
+          "key": "features.export",
+          "label": "Data Export (CSV/PDF)",
+          "type": "checkbox",
+          "default": false
+        },
+        {
+          "key": "features.internationalization",
+          "label": "Internationalization (i18n)",
+          "type": "checkbox",
+          "default": false
+        }
+      ]
+    },
+    {
+      "title": "Testing",
+      "icon": "🧪",
+      "description": "Testing strategy and tools",
+      "fields": [
+        {
+          "key": "testing.unit",
+          "label": "Unit Testing Framework",
+          "type": "select",
+          "options": [
+            { "value": "vitest", "label": "Vitest" },
+            { "value": "jest", "label": "Jest" },
+            { "value": "none", "label": "None" }
+          ],
+          "default": "vitest"
+        },
+        {
+          "key": "testing.component",
+          "label": "Component Testing",
+          "type": "select",
+          "options": [
+            { "value": "testing_library", "label": "React Testing Library" },
+            { "value": "enzyme", "label": "Enzyme" },
+            { "value": "none", "label": "None" }
+          ],
+          "default": "testing_library"
+        },
+        {
+          "key": "testing.e2e",
+          "label": "E2E Testing",
+          "type": "select",
+          "options": [
+            { "value": "playwright", "label": "Playwright" },
+            { "value": "cypress", "label": "Cypress" },
+            { "value": "none", "label": "None" }
+          ],
+          "default": "playwright"
+        },
+        {
+          "key": "testing.coverage",
+          "label": "Code Coverage",
+          "type": "checkbox",
+          "default": true,
+          "description": "Generate coverage reports"
+        },
+        {
+          "key": "testing.coverage_target",
+          "label": "Coverage Target (%)",
+          "type": "select",
+          "options": [
+            { "value": "60", "label": "60%" },
+            { "value": "70", "label": "70%" },
+            { "value": "80", "label": "80%" },
+            { "value": "90", "label": "90%+" }
+          ],
+          "default": "80"
+        }
+      ]
+    },
+    {
+      "title": "Performance",
+      "icon": "🚀",
+      "description": "Performance optimization strategies",
+      "fields": [
+        {
+          "key": "perf.code_splitting",
+          "label": "Code Splitting",
+          "type": "checkbox",
+          "default": true,
+          "description": "Split bundle into smaller chunks"
+        },
+        {
+          "key": "perf.lazy_components",
+          "label": "Lazy Load Components",
+          "type": "checkbox",
+          "default": true,
+          "description": "Load components on demand"
+        },
+        {
+          "key": "perf.image_optimization",
+          "label": "Image Optimization",
+          "type": "checkbox",
+          "default": true,
+          "description": "Optimize and lazy load images"
+        },
+        {
+          "key": "perf.virtualization",
+          "label": "List Virtualization",
+          "type": "checkbox",
+          "default": false,
+          "description": "For rendering large lists efficiently"
+        },
+        {
+          "key": "perf.memoization",
+          "label": "Memoization Strategy",
+          "type": "select",
+          "options": [
+            {
+              "value": "react_memo",
+              "label": "React.memo + useMemo + useCallback"
+            },
+            {
+              "value": "selective",
+              "label": "Selective (Only heavy components)"
+            },
+            { "value": "none", "label": "None" }
+          ],
+          "default": "selective"
+        },
+        {
+          "key": "perf.service_worker",
+          "label": "Service Worker / Offline Support",
+          "type": "checkbox",
+          "default": false
+        },
+        {
+          "key": "perf.lighthouse_target",
+          "label": "Lighthouse Score Target",
+          "type": "select",
+          "options": [
+            { "value": "70", "label": "70+ (Good)" },
+            { "value": "80", "label": "80+ (Very Good)" },
+            { "value": "90", "label": "90+ (Excellent)" },
+            { "value": "95", "label": "95+ (Perfect)" }
+          ],
+          "default": "90"
+        }
+      ]
+    },
+    {
+      "title": "SEO & Meta",
+      "icon": "🔍",
+      "description": "Search engine optimization and metadata",
+      "fields": [
+        {
+          "key": "seo.meta_tags",
+          "label": "Meta Tags Management",
+          "type": "select",
+          "options": [
+            { "value": "react_helmet", "label": "React Helmet" },
+            { "value": "next_head", "label": "Next.js Head" },
+            { "value": "custom", "label": "Custom Hook" },
+            { "value": "none", "label": "None" }
+          ],
+          "default": "react_helmet"
+        },
+        {
+          "key": "seo.sitemap",
+          "label": "Generate Sitemap",
+          "type": "checkbox",
+          "default": true
+        },
+        {
+          "key": "seo.robots_txt",
+          "label": "robots.txt",
+          "type": "checkbox",
+          "default": true
+        },
+        {
+          "key": "seo.open_graph",
+          "label": "Open Graph Tags",
+          "type": "checkbox",
+          "default": true,
+          "description": "Social media sharing metadata"
+        },
+        {
+          "key": "seo.structured_data",
+          "label": "Structured Data (JSON-LD)",
+          "type": "checkbox",
+          "default": false
+        },
+        {
+          "key": "seo.analytics",
+          "label": "Analytics Integration",
+          "type": "select",
+          "options": [
+            { "value": "ga4", "label": "Google Analytics 4" },
+            { "value": "plausible", "label": "Plausible" },
+            { "value": "posthog", "label": "PostHog" },
+            { "value": "mixpanel", "label": "Mixpanel" },
+            { "value": "none", "label": "None" }
+          ],
+          "default": "none"
+        }
+      ]
+    },
+    {
+      "title": "Deployment",
+      "icon": "🚢",
+      "description": "Deployment and infrastructure",
+      "fields": [
+        {
+          "key": "deploy.hosting",
+          "label": "Hosting Platform",
+          "type": "select",
+          "options": [
+            { "value": "vercel", "label": "Vercel" },
+            { "value": "netlify", "label": "Netlify" },
+            { "value": "cloudflare", "label": "Cloudflare Pages" },
+            { "value": "aws", "label": "AWS (S3 + CloudFront)" },
+            { "value": "docker", "label": "Docker + Nginx" },
+            { "value": "vps", "label": "VPS / Self-hosted" }
+          ],
+          "default": "vercel"
+        },
+        {
+          "key": "deploy.ci_cd",
+          "label": "CI/CD Platform",
+          "type": "select",
+          "options": [
+            { "value": "github_actions", "label": "GitHub Actions" },
+            { "value": "gitlab_ci", "label": "GitLab CI" },
+            { "value": "circleci", "label": "CircleCI" },
+            { "value": "none", "label": "None" }
+          ],
+          "default": "github_actions"
+        },
+        {
+          "key": "deploy.environment_vars",
+          "label": "Environment Variables",
+          "type": "list_builder",
+          "placeholder": "e.g., VITE_API_URL - API base URL",
+          "default": []
+        },
+        {
+          "key": "deploy.error_tracking",
+          "label": "Error Tracking",
+          "type": "select",
+          "options": [
+            { "value": "sentry", "label": "Sentry" },
+            { "value": "logrocket", "label": "LogRocket" },
+            { "value": "bugsnag", "label": "Bugsnag" },
+            { "value": "none", "label": "None" }
+          ],
+          "default": "sentry"
+        },
+        {
+          "key": "deploy.cdn",
+          "label": "CDN for Static Assets",
+          "type": "checkbox",
+          "default": true
+        },
+        {
+          "key": "deploy.preview_deployments",
+          "label": "Preview Deployments",
+          "type": "checkbox",
+          "default": true,
+          "description": "Deploy preview for each PR"
+        },
+        {
+          "key": "actions.generate_copy",
+          "label": "Generate Prompt",
+          "type": "action_button",
+          "button_text": "🚀 Generate & Copy to Clipboard",
+          "action": "generate_copy"
+        }
+      ]
+    }
+  ]
+}

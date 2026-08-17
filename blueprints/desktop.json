@@ -1,0 +1,1431 @@
+{
+  "name": "Desktop Application",
+  "description": "Native desktop app with Slint UI framework and Rust",
+  "icon": "🖥️",
+  "sections": [
+    {
+      "title": "Project Overview",
+      "icon": "📋",
+      "description": "Basic project information and target platforms",
+      "fields": [
+        {
+          "key": "project.name",
+          "label": "Project Name",
+          "type": "text",
+          "required": true,
+          "placeholder": "e.g., NoteKeeper"
+        },
+        {
+          "key": "project.description",
+          "label": "Description",
+          "type": "textarea",
+          "placeholder": "Describe what your desktop application does, its purpose, and target users"
+        },
+        {
+          "key": "project.type",
+          "label": "Application Type",
+          "type": "select",
+          "options": [
+            { "value": "productivity", "label": "Productivity Tool" },
+            { "value": "utility", "label": "System Utility" },
+            { "value": "media", "label": "Media Player / Editor" },
+            { "value": "development", "label": "Development Tool / IDE" },
+            { "value": "business", "label": "Business Application" },
+            { "value": "game", "label": "Game / Entertainment" },
+            { "value": "communication", "label": "Communication / Chat" },
+            { "value": "education", "label": "Education / Learning" },
+            { "value": "other", "label": "Other" }
+          ],
+          "default": "productivity"
+        },
+        {
+          "key": "project.target_platforms",
+          "label": "Target Platforms",
+          "type": "multiselect",
+          "options": [
+            { "value": "windows", "label": "Windows 10/11" },
+            { "value": "macos", "label": "macOS" },
+            { "value": "linux", "label": "Linux (X11/Wayland)" },
+            { "value": "linux_arm", "label": "Linux ARM (Raspberry Pi)" }
+          ],
+          "default": ["windows", "macos", "linux"]
+        },
+        {
+          "key": "project.window_type",
+          "label": "Window Type",
+          "type": "select",
+          "options": [
+            { "value": "single_window", "label": "Single Window" },
+            { "value": "multi_window", "label": "Multi-Window" },
+            { "value": "tabbed", "label": "Tabbed Interface" },
+            { "value": "mdi", "label": "MDI (Multiple Document Interface)" }
+          ],
+          "default": "single_window"
+        },
+        {
+          "key": "project.team_size",
+          "label": "Team Size",
+          "type": "select",
+          "options": [
+            { "value": "solo", "label": "Solo Developer" },
+            { "value": "small", "label": "Small Team (2-5)" },
+            { "value": "medium", "label": "Medium Team (6-15)" },
+            { "value": "large", "label": "Large Team (16+)" }
+          ],
+          "default": "solo"
+        }
+      ]
+    },
+    {
+      "title": "Technology Stack",
+      "icon": "⚙️",
+      "description": "Core technologies and dependencies",
+      "fields": [
+        {
+          "key": "tech.rust_version",
+          "label": "Rust Version",
+          "type": "select",
+          "options": [
+            { "value": "stable", "label": "Stable (Latest)" },
+            { "value": "1.82", "label": "1.82" },
+            { "value": "1.80", "label": "1.80" },
+            { "value": "nightly", "label": "Nightly" }
+          ],
+          "default": "stable"
+        },
+        {
+          "key": "tech.slint_version",
+          "label": "Slint Version",
+          "type": "crate_input",
+          "crate_name": "slint",
+          "registry": "crates.io",
+          "placeholder": "e.g., 1.9.0",
+          "default": ""
+        },
+        {
+          "key": "tech.slint_compiler",
+          "label": "Slint Compiler",
+          "type": "crate_input",
+          "crate_name": "slint-build",
+          "registry": "crates.io",
+          "placeholder": "e.g., 1.9.0",
+          "default": ""
+        },
+        {
+          "key": "tech.edition",
+          "label": "Rust Edition",
+          "type": "select",
+          "options": [
+            { "value": "2024", "label": "2024" },
+            { "value": "2021", "label": "2021" }
+          ],
+          "default": "2021"
+        },
+        {
+          "key": "tech.additional_deps",
+          "label": "Search & Add Crates",
+          "type": "crate_search",
+          "target_list_key": "tech.additional_crates",
+          "registry": "crates.io",
+          "placeholder": "Type crate name (e.g., serde, tokio, rfd)"
+        },
+        {
+          "key": "tech.additional_crates",
+          "label": "Additional Crates",
+          "type": "multiselect",
+          "hidden": true,
+          "default": []
+        },
+        {
+          "key": "tech.async_runtime",
+          "label": "Async Runtime",
+          "type": "select",
+          "options": [
+            { "value": "tokio", "label": "Tokio" },
+            { "value": "async-std", "label": "async-std" },
+            { "value": "smol", "label": "smol" },
+            { "value": "none", "label": "None (Synchronous)" }
+          ],
+          "default": "tokio"
+        },
+        {
+          "key": "tech.serialization",
+          "label": "Serialization Format",
+          "type": "select",
+          "options": [
+            { "value": "serde_json", "label": "JSON (serde_json)" },
+            { "value": "serde_toml", "label": "TOML (serde_toml)" },
+            { "value": "serde_yaml", "label": "YAML (serde_yaml)" },
+            { "value": "bincode", "label": "Binary (bincode)" },
+            { "value": "sqlite", "label": "SQLite Database" }
+          ],
+          "default": "serde_json"
+        }
+      ]
+    },
+    {
+      "title": "Architecture",
+      "icon": "🏗️",
+      "description": "Code organization and design patterns",
+      "fields": [
+        {
+          "key": "arch.pattern",
+          "label": "Architecture Pattern",
+          "type": "select",
+          "options": [
+            { "value": "mvvm", "label": "MVVM (Model-View-ViewModel)" },
+            { "value": "mvc", "label": "MVC (Model-View-Controller)" },
+            { "value": "component", "label": "Component-Based" },
+            { "value": "simple", "label": "Simple Flat Structure" }
+          ],
+          "default": "mvvm"
+        },
+        {
+          "key": "arch.slint_ui_structure",
+          "label": "Slint UI Organization",
+          "type": "select",
+          "options": [
+            { "value": "single_file", "label": "Single .slint File" },
+            {
+              "value": "multi_file",
+              "label": "Multiple .slint Files (per component)"
+            },
+            { "value": "module_per_feature", "label": "Module per Feature" },
+            {
+              "value": "theme_separated",
+              "label": "Theme + Components Separated"
+            }
+          ],
+          "default": "multi_file"
+        },
+        {
+          "key": "arch.state_management",
+          "label": "State Management",
+          "type": "select",
+          "options": [
+            { "value": "slint_model", "label": "Slint Model/Property Binding" },
+            { "value": "rust_struct", "label": "Rust Struct with Callbacks" },
+            { "value": "shared_state", "label": "Shared State (Arc<Mutex<>>)" },
+            { "value": "event_bus", "label": "Event Bus / Message Passing" }
+          ],
+          "default": "slint_model"
+        },
+        {
+          "key": "arch.error_handling",
+          "label": "Error Handling",
+          "type": "select",
+          "options": [
+            { "value": "thiserror", "label": "thiserror (Typed errors)" },
+            { "value": "anyhow", "label": "anyhow (Dynamic errors)" },
+            { "value": "custom", "label": "Custom Error Enum" },
+            { "value": "mixed", "label": "Mixed (thiserror + anyhow)" }
+          ],
+          "default": "mixed"
+        },
+        {
+          "key": "arch.config_management",
+          "label": "Configuration Management",
+          "type": "select",
+          "options": [
+            { "value": "toml_file", "label": "TOML Config File" },
+            { "value": "json_file", "label": "JSON Config File" },
+            { "value": "env_vars", "label": "Environment Variables" },
+            { "value": "embedded", "label": "Embedded (compile-time)" },
+            { "value": "registry", "label": "OS Registry / Preferences" }
+          ],
+          "default": "toml_file"
+        },
+        {
+          "key": "arch.dependency_injection",
+          "label": "Dependency Injection",
+          "type": "checkbox",
+          "default": false,
+          "description": "Use trait objects for testability"
+        },
+        {
+          "key": "arch.layers",
+          "label": "Architecture Layers",
+          "type": "list_builder",
+          "placeholder": "e.g., ui - Slint UI components and views",
+          "default": []
+        }
+      ]
+    },
+    {
+      "title": "UI Design",
+      "icon": "🎨",
+      "description": "Visual design, theming, and layout",
+      "fields": [
+        {
+          "key": "ui.theme",
+          "label": "UI Theme",
+          "type": "select",
+          "options": [
+            { "value": "light", "label": "Light Theme" },
+            { "value": "dark", "label": "Dark Theme" },
+            { "value": "auto", "label": "Auto (Follow OS)" },
+            { "value": "custom", "label": "Custom Theme" },
+            { "value": "both", "label": "Both (Light + Dark with toggle)" }
+          ],
+          "default": "auto"
+        },
+        {
+          "key": "ui.design_system",
+          "label": "Design System",
+          "type": "select",
+          "options": [
+            { "value": "fluent", "label": "Fluent Design (Windows)" },
+            { "value": "material", "label": "Material Design" },
+            { "value": "hig", "label": "Apple HIG (macOS)" },
+            { "value": "gnome", "label": "GNOME HIG (Linux)" },
+            { "value": "custom", "label": "Custom Design" },
+            { "value": "slint_default", "label": "Slint Default Widgets" }
+          ],
+          "default": "slint_default"
+        },
+        {
+          "key": "ui.color_scheme",
+          "label": "Primary Color Scheme",
+          "type": "select",
+          "options": [
+            { "value": "blue", "label": "Blue" },
+            { "value": "purple", "label": "Purple" },
+            { "value": "green", "label": "Green" },
+            { "value": "orange", "label": "Orange" },
+            { "value": "red", "label": "Red" },
+            { "value": "teal", "label": "Teal" },
+            { "value": "custom", "label": "Custom Colors" }
+          ],
+          "default": "blue"
+        },
+        {
+          "key": "ui.font",
+          "label": "Font Family",
+          "type": "select",
+          "options": [
+            { "value": "system", "label": "System Default" },
+            { "value": "inter", "label": "Inter" },
+            { "value": "roboto", "label": "Roboto" },
+            { "value": "fira_sans", "label": "Fira Sans" },
+            { "value": "jetbrains_mono", "label": "JetBrains Mono (Code)" },
+            { "value": "custom", "label": "Custom Font" }
+          ],
+          "default": "system"
+        },
+        {
+          "key": "ui.responsive_layout",
+          "label": "Responsive Layout",
+          "type": "checkbox",
+          "default": true,
+          "description": "Adapt layout to window size"
+        },
+        {
+          "key": "ui.animations",
+          "label": "UI Animations",
+          "type": "checkbox",
+          "default": true,
+          "description": "Smooth transitions and animations"
+        },
+        {
+          "key": "ui.icons",
+          "label": "Icon Style",
+          "type": "select",
+          "options": [
+            { "value": "embedded_svg", "label": "Embedded SVG Icons" },
+            { "value": "font_icons", "label": "Icon Font" },
+            { "value": "image_assets", "label": "Image Assets (PNG)" },
+            { "value": "system_icons", "label": "System/Platform Icons" },
+            { "value": "none", "label": "No Icons" }
+          ],
+          "default": "embedded_svg"
+        },
+        {
+          "key": "ui.custom_components",
+          "label": "Custom UI Components",
+          "type": "list_builder",
+          "placeholder": "e.g., Sidebar - Navigation sidebar with collapsible sections",
+          "default": []
+        },
+        {
+          "key": "ui.layouts",
+          "label": "Main Layouts",
+          "type": "list_builder",
+          "placeholder": "e.g., MainLayout - Sidebar + Content area",
+          "default": []
+        }
+      ]
+    },
+    {
+      "title": "Navigation",
+      "icon": "🗺️",
+      "description": "Views, pages, and navigation structure",
+      "fields": [
+        {
+          "key": "nav.style",
+          "label": "Navigation Style",
+          "type": "select",
+          "options": [
+            { "value": "sidebar", "label": "Sidebar Navigation" },
+            { "value": "tab_bar", "label": "Tab Bar" },
+            { "value": "menu_bar", "label": "Menu Bar" },
+            { "value": "stack", "label": "Stack Navigation (Push/Pop)" },
+            { "value": "toolbar", "label": "Toolbar Buttons" },
+            { "value": "hybrid", "label": "Hybrid (Sidebar + Tabs)" }
+          ],
+          "default": "sidebar"
+        },
+        {
+          "key": "nav.views",
+          "label": "Views / Pages",
+          "type": "list_builder",
+          "placeholder": "e.g., HomeView - Main dashboard with overview",
+          "default": []
+        },
+        {
+          "key": "nav.transitions",
+          "label": "View Transitions",
+          "type": "select",
+          "options": [
+            { "value": "fade", "label": "Fade In/Out" },
+            { "value": "slide", "label": "Slide Left/Right" },
+            { "value": "none", "label": "Instant Switch" },
+            { "value": "custom", "label": "Custom Animation" }
+          ],
+          "default": "fade"
+        },
+        {
+          "key": "nav.breadcrumbs",
+          "label": "Breadcrumb Navigation",
+          "type": "checkbox",
+          "default": false,
+          "description": "Show navigation path for deep views"
+        },
+        {
+          "key": "nav.keyboard_navigation",
+          "label": "Keyboard Navigation",
+          "type": "checkbox",
+          "default": true,
+          "description": "Navigate views with keyboard shortcuts"
+        },
+        {
+          "key": "nav.back_forward",
+          "label": "Back/Forward Navigation",
+          "type": "checkbox",
+          "default": false,
+          "description": "Browser-like back/forward buttons"
+        }
+      ]
+    },
+    {
+      "title": "Data & Persistence",
+      "icon": "💾",
+      "description": "Local data storage and file handling",
+      "fields": [
+        {
+          "key": "data.storage_backend",
+          "label": "Data Storage",
+          "type": "select",
+          "options": [
+            { "value": "sqlite", "label": "SQLite Database" },
+            { "value": "json_files", "label": "JSON Files" },
+            { "value": "toml_files", "label": "TOML Files" },
+            { "value": "sled", "label": "Sled (Embedded KV Store)" },
+            { "value": "redb", "label": "Redb (Embedded KV Store)" },
+            { "value": "file_system", "label": "Plain File System" },
+            { "value": "none", "label": "No Persistence" }
+          ],
+          "default": "sqlite"
+        },
+        {
+          "key": "data.storage_location",
+          "label": "Data Storage Location",
+          "type": "select",
+          "options": [
+            { "value": "app_data", "label": "OS App Data Directory" },
+            { "value": "documents", "label": "User Documents" },
+            { "value": "app_directory", "label": "Application Directory" },
+            { "value": "custom", "label": "Custom Path (User Selectable)" },
+            { "value": "portable", "label": "Portable (Next to executable)" }
+          ],
+          "default": "app_data"
+        },
+        {
+          "key": "data.entities",
+          "label": "Data Entities / Models",
+          "type": "textarea",
+          "placeholder": "struct Note {\n    id: Uuid,\n    title: String,\n    content: String,\n    created_at: DateTime<Utc>,\n    updated_at: DateTime<Utc>,\n}"
+        },
+        {
+          "key": "data.auto_save",
+          "label": "Auto-Save",
+          "type": "checkbox",
+          "default": true,
+          "description": "Automatically save changes periodically"
+        },
+        {
+          "key": "data.auto_save_interval",
+          "label": "Auto-Save Interval",
+          "type": "select",
+          "options": [
+            { "value": "5s", "label": "5 seconds" },
+            { "value": "30s", "label": "30 seconds" },
+            { "value": "1m", "label": "1 minute" },
+            { "value": "5m", "label": "5 minutes" },
+            { "value": "on_change", "label": "On Every Change" }
+          ],
+          "default": "30s"
+        },
+        {
+          "key": "data.backup",
+          "label": "Data Backup",
+          "type": "checkbox",
+          "default": false,
+          "description": "Create periodic backups of user data"
+        },
+        {
+          "key": "data.import_export",
+          "label": "Import/Export Formats",
+          "type": "multiselect",
+          "options": [
+            { "value": "json", "label": "JSON" },
+            { "value": "csv", "label": "CSV" },
+            { "value": "xml", "label": "XML" },
+            { "value": "yaml", "label": "YAML" },
+            { "value": "markdown", "label": "Markdown" },
+            { "value": "pdf", "label": "PDF" },
+            { "value": "custom", "label": "Custom Format" }
+          ],
+          "default": []
+        },
+        {
+          "key": "data.settings_persistence",
+          "label": "Settings Persistence",
+          "type": "checkbox",
+          "default": true,
+          "description": "Remember user preferences between sessions"
+        },
+        {
+          "key": "data.recent_files",
+          "label": "Recent Files List",
+          "type": "checkbox",
+          "default": true,
+          "description": "Track recently opened files/projects"
+        }
+      ]
+    },
+    {
+      "title": "System Integration",
+      "icon": "🔌",
+      "description": "OS-level features and system interactions",
+      "fields": [
+        {
+          "key": "sys.file_dialogs",
+          "label": "Native File Dialogs",
+          "type": "checkbox",
+          "default": true,
+          "description": "Use OS-native open/save dialogs"
+        },
+        {
+          "key": "sys.notifications",
+          "label": "Desktop Notifications",
+          "type": "checkbox",
+          "default": false,
+          "description": "Show system notifications"
+        },
+        {
+          "key": "sys.system_tray",
+          "label": "System Tray Icon",
+          "type": "checkbox",
+          "default": false,
+          "description": "Minimize to system tray"
+        },
+        {
+          "key": "sys.clipboard",
+          "label": "Clipboard Access",
+          "type": "checkbox",
+          "default": true,
+          "description": "Copy/paste to system clipboard"
+        },
+        {
+          "key": "sys.drag_drop",
+          "label": "Drag & Drop",
+          "type": "checkbox",
+          "default": false,
+          "description": "Drag files into the application"
+        },
+        {
+          "key": "sys.global_shortcuts",
+          "label": "Global Keyboard Shortcuts",
+          "type": "checkbox",
+          "default": false,
+          "description": "System-wide hotkeys (e.g., Ctrl+Shift+N)"
+        },
+        {
+          "key": "sys.file_associations",
+          "label": "File Type Associations",
+          "type": "checkbox",
+          "default": false,
+          "description": "Register app as handler for file types"
+        },
+        {
+          "key": "sys.auto_start",
+          "label": "Start on System Boot",
+          "type": "checkbox",
+          "default": false,
+          "description": "Launch application on OS startup"
+        },
+        {
+          "key": "sys.dark_mode_detection",
+          "label": "Detect OS Dark Mode",
+          "type": "checkbox",
+          "default": true,
+          "description": "Automatically switch theme based on OS setting"
+        },
+        {
+          "key": "sys.multi_monitor",
+          "label": "Multi-Monitor Support",
+          "type": "checkbox",
+          "default": true,
+          "description": "Handle multiple displays correctly"
+        },
+        {
+          "key": "sys.dpi_scaling",
+          "label": "HiDPI / Retina Support",
+          "type": "checkbox",
+          "default": true,
+          "description": "Scale UI for high-resolution displays"
+        },
+        {
+          "key": "sys.printing",
+          "label": "Printing Support",
+          "type": "checkbox",
+          "default": false,
+          "description": "Print documents via system print dialog"
+        },
+        {
+          "key": "sys.custom_protocols",
+          "label": "Custom URL Protocols",
+          "type": "checkbox",
+          "default": false,
+          "description": "Register custom:// protocol handler"
+        }
+      ]
+    },
+    {
+      "title": "Threading & Async",
+      "icon": "🧵",
+      "description": "Background tasks and concurrency",
+      "fields": [
+        {
+          "key": "thread.background_tasks",
+          "label": "Background Tasks",
+          "type": "checkbox",
+          "default": true,
+          "description": "Run heavy operations off the UI thread"
+        },
+        {
+          "key": "thread.task_examples",
+          "label": "Background Task Examples",
+          "type": "list_builder",
+          "placeholder": "e.g., FileImport - Import large files without freezing UI",
+          "default": []
+        },
+        {
+          "key": "thread.progress_reporting",
+          "label": "Progress Reporting",
+          "type": "checkbox",
+          "default": true,
+          "description": "Show progress bars for long operations"
+        },
+        {
+          "key": "thread.cancellation",
+          "label": "Task Cancellation",
+          "type": "checkbox",
+          "default": true,
+          "description": "Allow users to cancel long-running operations"
+        },
+        {
+          "key": "thread.thread_pool",
+          "label": "Thread Pool",
+          "type": "select",
+          "options": [
+            { "value": "rayon", "label": "Rayon (Data Parallelism)" },
+            { "value": "tokio", "label": "Tokio (Async Tasks)" },
+            { "value": "std_threads", "label": "std::thread (Manual)" },
+            { "value": "crossbeam", "label": "Crossbeam Channels" },
+            { "value": "none", "label": "None (Single-threaded)" }
+          ],
+          "default": "tokio"
+        },
+        {
+          "key": "thread.ui_updates",
+          "label": "UI Update Strategy",
+          "type": "select",
+          "options": [
+            {
+              "value": "slint_invoke",
+              "label": "Slint invoke_from_event_loop"
+            },
+            { "value": "channels", "label": "MPSC Channels" },
+            { "value": "shared_state", "label": "Shared State with Mutex" },
+            { "value": "polling", "label": "Polling with Timer" }
+          ],
+          "default": "slint_invoke"
+        },
+        {
+          "key": "thread.debounce",
+          "label": "Input Debouncing",
+          "type": "checkbox",
+          "default": true,
+          "description": "Debounce rapid input events (search, resize)"
+        }
+      ]
+    },
+    {
+      "title": "Input Handling",
+      "icon": "⌨️",
+      "description": "Keyboard, mouse, and input device handling",
+      "fields": [
+        {
+          "key": "input.keyboard_shortcuts",
+          "label": "Keyboard Shortcuts",
+          "type": "list_builder",
+          "placeholder": "e.g., Ctrl+S - Save current document",
+          "default": []
+        },
+        {
+          "key": "input.menu_bar",
+          "label": "Menu Bar",
+          "type": "checkbox",
+          "default": true,
+          "description": "Traditional File/Edit/View/Help menu"
+        },
+        {
+          "key": "input.context_menus",
+          "label": "Context Menus (Right-Click)",
+          "type": "checkbox",
+          "default": true,
+          "description": "Right-click context menus"
+        },
+        {
+          "key": "input.toolbar",
+          "label": "Toolbar",
+          "type": "checkbox",
+          "default": true,
+          "description": "Quick-access toolbar with common actions"
+        },
+        {
+          "key": "input.status_bar",
+          "label": "Status Bar",
+          "type": "checkbox",
+          "default": true,
+          "description": "Bottom status bar with info and indicators"
+        },
+        {
+          "key": "input.undo_redo",
+          "label": "Undo/Redo Support",
+          "type": "checkbox",
+          "default": true,
+          "description": "Undo and redo user actions"
+        },
+        {
+          "key": "input.search",
+          "label": "Search / Find",
+          "type": "checkbox",
+          "default": true,
+          "description": "Search functionality (Ctrl+F)"
+        },
+        {
+          "key": "input.zoom",
+          "label": "Zoom Controls",
+          "type": "checkbox",
+          "default": false,
+          "description": "Zoom in/out (Ctrl+/-)"
+        },
+        {
+          "key": "input.fullscreen",
+          "label": "Fullscreen Mode",
+          "type": "checkbox",
+          "default": false,
+          "description": "Toggle fullscreen (F11)"
+        },
+        {
+          "key": "input.custom_keybindings",
+          "label": "Customizable Keybindings",
+          "type": "checkbox",
+          "default": false,
+          "description": "Allow users to remap keyboard shortcuts"
+        }
+      ]
+    },
+    {
+      "title": "Dialogs & Modals",
+      "icon": "💬",
+      "description": "Popup dialogs, modals, and notifications",
+      "fields": [
+        {
+          "key": "dialogs.confirmation",
+          "label": "Confirmation Dialogs",
+          "type": "checkbox",
+          "default": true,
+          "description": "Confirm before destructive actions (delete, exit)"
+        },
+        {
+          "key": "dialogs.error_dialogs",
+          "label": "Error Dialogs",
+          "type": "checkbox",
+          "default": true,
+          "description": "Show error messages in modal dialogs"
+        },
+        {
+          "key": "dialogs.settings_dialog",
+          "label": "Settings Dialog",
+          "type": "checkbox",
+          "default": true,
+          "description": "Application settings/preferences window"
+        },
+        {
+          "key": "dialogs.about_dialog",
+          "label": "About Dialog",
+          "type": "checkbox",
+          "default": true,
+          "description": "About box with version and credits"
+        },
+        {
+          "key": "dialogs.toast_notifications",
+          "label": "Toast Notifications",
+          "type": "checkbox",
+          "default": true,
+          "description": "Non-intrusive toast messages"
+        },
+        {
+          "key": "dialogs.progress_dialog",
+          "label": "Progress Dialog",
+          "type": "checkbox",
+          "default": true,
+          "description": "Modal progress indicator for operations"
+        },
+        {
+          "key": "dialogs.input_dialogs",
+          "label": "Input Dialogs",
+          "type": "list_builder",
+          "placeholder": "e.g., NewProjectDialog - Create new project with name and template",
+          "default": []
+        }
+      ]
+    },
+    {
+      "title": "Internationalization",
+      "icon": "🌍",
+      "description": "Multi-language support and localization",
+      "fields": [
+        {
+          "key": "i18n.enabled",
+          "label": "Internationalization Enabled",
+          "type": "checkbox",
+          "default": false,
+          "description": "Support multiple languages"
+        },
+        {
+          "key": "i18n.languages",
+          "label": "Supported Languages",
+          "type": "list_builder",
+          "placeholder": "e.g., en-US - English (United States)",
+          "default": []
+        },
+        {
+          "key": "i18n.translation_format",
+          "label": "Translation File Format",
+          "type": "select",
+          "options": [
+            { "value": "json", "label": "JSON" },
+            { "value": "toml", "label": "TOML" },
+            { "value": "gettext", "label": "Gettext (.po files)" },
+            { "value": "fluent", "label": "Fluent (.ftl files)" },
+            { "value": "yaml", "label": "YAML" }
+          ],
+          "default": "json"
+        },
+        {
+          "key": "i18n.rtl_support",
+          "label": "RTL (Right-to-Left) Support",
+          "type": "checkbox",
+          "default": false,
+          "description": "Support Arabic, Hebrew, etc."
+        },
+        {
+          "key": "i18n.date_format",
+          "label": "Locale-Aware Date/Time",
+          "type": "checkbox",
+          "default": false,
+          "description": "Format dates based on user locale"
+        },
+        {
+          "key": "i18n.number_format",
+          "label": "Locale-Aware Number Formatting",
+          "type": "checkbox",
+          "default": false,
+          "description": "Format numbers based on locale"
+        }
+      ]
+    },
+    {
+      "title": "Accessibility",
+      "icon": "♿",
+      "description": "Accessibility features and compliance",
+      "fields": [
+        {
+          "key": "a11y.screen_reader",
+          "label": "Screen Reader Support",
+          "type": "checkbox",
+          "default": false,
+          "description": "Compatible with NVDA, VoiceOver, Orca"
+        },
+        {
+          "key": "a11y.high_contrast",
+          "label": "High Contrast Mode",
+          "type": "checkbox",
+          "default": false,
+          "description": "Support OS high contrast themes"
+        },
+        {
+          "key": "a11y.font_scaling",
+          "label": "Font Size Scaling",
+          "type": "checkbox",
+          "default": true,
+          "description": "Allow users to increase font size"
+        },
+        {
+          "key": "a11y.keyboard_only",
+          "label": "Full Keyboard Navigation",
+          "type": "checkbox",
+          "default": true,
+          "description": "All features accessible via keyboard"
+        },
+        {
+          "key": "a11y.focus_indicators",
+          "label": "Visible Focus Indicators",
+          "type": "checkbox",
+          "default": true,
+          "description": "Clear visual indication of focused elements"
+        },
+        {
+          "key": "a11y.color_blind",
+          "label": "Color Blind Friendly",
+          "type": "checkbox",
+          "default": false,
+          "description": "Don't rely solely on color for information"
+        },
+        {
+          "key": "a11y.reduced_motion",
+          "label": "Respect Reduced Motion",
+          "type": "checkbox",
+          "default": false,
+          "description": "Disable animations when OS setting is enabled"
+        }
+      ]
+    },
+    {
+      "title": "Performance",
+      "icon": "🚀",
+      "description": "Rendering optimization and resource management",
+      "fields": [
+        {
+          "key": "perf.rendering_backend",
+          "label": "Rendering Backend",
+          "type": "select",
+          "options": [
+            { "value": "femtovg", "label": "FemtoVG (OpenGL)" },
+            { "value": "skia", "label": "Skia" },
+            { "value": "software", "label": "Software Renderer" },
+            { "value": "auto", "label": "Auto (Best available)" }
+          ],
+          "default": "auto"
+        },
+        {
+          "key": "perf.lazy_loading",
+          "label": "Lazy Loading",
+          "type": "checkbox",
+          "default": true,
+          "description": "Load views/components on demand"
+        },
+        {
+          "key": "perf.virtual_scrolling",
+          "label": "Virtual Scrolling",
+          "type": "checkbox",
+          "default": false,
+          "description": "Only render visible items in long lists"
+        },
+        {
+          "key": "perf.image_caching",
+          "label": "Image Caching",
+          "type": "checkbox",
+          "default": true,
+          "description": "Cache decoded images in memory"
+        },
+        {
+          "key": "perf.memory_management",
+          "label": "Memory Management Strategy",
+          "type": "select",
+          "options": [
+            { "value": "arc", "label": "Arc (Reference Counting)" },
+            { "value": "rc", "label": "Rc (Single-threaded)" },
+            { "value": "arena", "label": "Arena Allocation" },
+            { "value": "pool", "label": "Object Pooling" }
+          ],
+          "default": "arc"
+        },
+        {
+          "key": "perf.startup_time",
+          "label": "Startup Time Target",
+          "type": "select",
+          "options": [
+            { "value": "instant", "label": "< 500ms (Instant)" },
+            { "value": "fast", "label": "< 1s (Fast)" },
+            { "value": "acceptable", "label": "< 3s (Acceptable)" },
+            { "value": "no_target", "label": "No Specific Target" }
+          ],
+          "default": "fast"
+        },
+        {
+          "key": "perf.benchmarks",
+          "label": "Performance Benchmarks",
+          "type": "checkbox",
+          "default": false,
+          "description": "Benchmark critical paths"
+        }
+      ]
+    },
+    {
+      "title": "Testing",
+      "icon": "🧪",
+      "description": "Testing strategy and quality assurance",
+      "fields": [
+        {
+          "key": "test.unit",
+          "label": "Unit Tests",
+          "type": "checkbox",
+          "default": true,
+          "description": "Test business logic and utilities"
+        },
+        {
+          "key": "test.integration",
+          "label": "Integration Tests",
+          "type": "checkbox",
+          "default": true,
+          "description": "Test data layer and file operations"
+        },
+        {
+          "key": "test.ui_tests",
+          "label": "UI Tests",
+          "type": "checkbox",
+          "default": false,
+          "description": "Test UI components and interactions"
+        },
+        {
+          "key": "test.ui_test_tool",
+          "label": "UI Testing Tool",
+          "type": "select",
+          "options": [
+            { "value": "slint_testing", "label": "Slint Testing Utilities" },
+            { "value": "custom_harness", "label": "Custom Test Harness" },
+            { "value": "screenshot", "label": "Screenshot Comparison" },
+            { "value": "none", "label": "None" }
+          ],
+          "default": "slint_testing"
+        },
+        {
+          "key": "test.mocking",
+          "label": "Mocking Framework",
+          "type": "select",
+          "options": [
+            { "value": "mockall", "label": "Mockall" },
+            { "value": "mockito", "label": "Mockito" },
+            { "value": "custom", "label": "Custom Mocks" },
+            { "value": "none", "label": "None" }
+          ],
+          "default": "mockall"
+        },
+        {
+          "key": "test.coverage_target",
+          "label": "Code Coverage Target",
+          "type": "select",
+          "options": [
+            { "value": "60", "label": "60%" },
+            { "value": "70", "label": "70%" },
+            { "value": "80", "label": "80%" },
+            { "value": "90", "label": "90%+" }
+          ],
+          "default": "70"
+        },
+        {
+          "key": "test.cross_platform",
+          "label": "Cross-Platform Testing",
+          "type": "checkbox",
+          "default": false,
+          "description": "Test on all target platforms in CI"
+        }
+      ]
+    },
+    {
+      "title": "Packaging & Distribution",
+      "icon": "📦",
+      "description": "Building installers and distributing the app",
+      "fields": [
+        {
+          "key": "pkg.windows_format",
+          "label": "Windows Installer Format",
+          "type": "select",
+          "options": [
+            { "value": "msi", "label": "MSI (Windows Installer)" },
+            { "value": "nsis", "label": "NSIS Installer" },
+            { "value": "wix", "label": "WiX Toolset" },
+            { "value": "squirrel", "label": "Squirrel (Auto-update)" },
+            { "value": "portable", "label": "Portable (No installer)" },
+            { "value": "msix", "label": "MSIX Package" },
+            { "value": "none", "label": "None" }
+          ],
+          "default": "nsis"
+        },
+        {
+          "key": "pkg.macos_format",
+          "label": "macOS Distribution Format",
+          "type": "select",
+          "options": [
+            { "value": "dmg", "label": "DMG (Disk Image)" },
+            { "value": "pkg", "label": "PKG Installer" },
+            { "value": "app_bundle", "label": ".app Bundle Only" },
+            { "value": "homebrew", "label": "Homebrew Cask" },
+            { "value": "none", "label": "None" }
+          ],
+          "default": "dmg"
+        },
+        {
+          "key": "pkg.linux_format",
+          "label": "Linux Distribution Format",
+          "type": "multiselect",
+          "options": [
+            { "value": "deb", "label": "DEB (Debian/Ubuntu)" },
+            { "value": "rpm", "label": "RPM (Fedora/RHEL)" },
+            { "value": "appimage", "label": "AppImage" },
+            { "value": "flatpak", "label": "Flatpak" },
+            { "value": "snap", "label": "Snap" },
+            { "value": "tarball", "label": "Tarball (.tar.gz)" },
+            { "value": "aur", "label": "AUR (Arch Linux)" }
+          ],
+          "default": ["deb", "appimage"]
+        },
+        {
+          "key": "pkg.auto_update",
+          "label": "Auto-Update Mechanism",
+          "type": "select",
+          "options": [
+            { "value": "built_in", "label": "Built-in Updater" },
+            { "value": "sparkle", "label": "Sparkle (macOS)" },
+            { "value": "squirrel", "label": "Squirrel (Windows)" },
+            { "value": "package_manager", "label": "OS Package Manager" },
+            { "value": "manual", "label": "Manual Download" },
+            { "value": "none", "label": "None" }
+          ],
+          "default": "manual"
+        },
+        {
+          "key": "pkg.code_signing",
+          "label": "Code Signing",
+          "type": "checkbox",
+          "default": false,
+          "description": "Sign executables with code signing certificate"
+        },
+        {
+          "key": "pkg.versioning",
+          "label": "Versioning Scheme",
+          "type": "select",
+          "options": [
+            { "value": "semver", "label": "Semantic Versioning (1.2.3)" },
+            { "value": "calver", "label": "Calendar Versioning (2024.1)" },
+            { "value": "custom", "label": "Custom Scheme" }
+          ],
+          "default": "semver"
+        },
+        {
+          "key": "pkg.build_tool",
+          "label": "Build / Packaging Tool",
+          "type": "select",
+          "options": [
+            { "value": "cargo_bundle", "label": "cargo-bundle" },
+            { "value": "cargo_packager", "label": "cargo-packager" },
+            { "value": "tauri_bundler", "label": "Tauri Bundler" },
+            { "value": "custom_script", "label": "Custom Build Script" },
+            { "value": "manual", "label": "Manual Packaging" }
+          ],
+          "default": "cargo_bundle"
+        }
+      ]
+    },
+    {
+      "title": "Deployment & CI/CD",
+      "icon": "🔄",
+      "description": "Build automation and release pipeline",
+      "fields": [
+        {
+          "key": "deploy.ci_platform",
+          "label": "CI/CD Platform",
+          "type": "select",
+          "options": [
+            { "value": "github_actions", "label": "GitHub Actions" },
+            { "value": "gitlab_ci", "label": "GitLab CI" },
+            { "value": "circleci", "label": "CircleCI" },
+            { "value": "none", "label": "None" }
+          ],
+          "default": "github_actions"
+        },
+        {
+          "key": "deploy.cross_compile",
+          "label": "Cross-Compilation",
+          "type": "checkbox",
+          "default": true,
+          "description": "Build for all platforms from single CI"
+        },
+        {
+          "key": "deploy.release_artifacts",
+          "label": "Release Artifacts",
+          "type": "multiselect",
+          "options": [
+            { "value": "windows_installer", "label": "Windows Installer" },
+            { "value": "macos_dmg", "label": "macOS DMG" },
+            { "value": "linux_deb", "label": "Linux DEB" },
+            { "value": "linux_appimage", "label": "Linux AppImage" },
+            { "value": "source_tarball", "label": "Source Tarball" },
+            { "value": "checksums", "label": "SHA256 Checksums" }
+          ],
+          "default": [
+            "windows_installer",
+            "macos_dmg",
+            "linux_deb",
+            "linux_appimage"
+          ]
+        },
+        {
+          "key": "deploy.nightly_builds",
+          "label": "Nightly Builds",
+          "type": "checkbox",
+          "default": false,
+          "description": "Automatic nightly builds for testing"
+        },
+        {
+          "key": "deploy.beta_channel",
+          "label": "Beta Release Channel",
+          "type": "checkbox",
+          "default": false,
+          "description": "Separate beta release channel"
+        },
+        {
+          "key": "deploy.crash_reporting",
+          "label": "Crash Reporting",
+          "type": "select",
+          "options": [
+            { "value": "sentry", "label": "Sentry" },
+            { "value": "breakpad", "label": "Breakpad / Crashpad" },
+            { "value": "custom", "label": "Custom Crash Handler" },
+            { "value": "none", "label": "None" }
+          ],
+          "default": "none"
+        },
+        {
+          "key": "deploy.telemetry",
+          "label": "Usage Telemetry",
+          "type": "checkbox",
+          "default": false,
+          "description": "Collect anonymous usage statistics (opt-in)"
+        }
+      ]
+    },
+    {
+      "title": "Documentation",
+      "icon": "📚",
+      "description": "User and developer documentation",
+      "fields": [
+        {
+          "key": "docs.readme",
+          "label": "Comprehensive README",
+          "type": "checkbox",
+          "default": true,
+          "description": "Setup, build, and usage instructions"
+        },
+        {
+          "key": "docs.user_guide",
+          "label": "User Guide / Manual",
+          "type": "checkbox",
+          "default": true,
+          "description": "End-user documentation with screenshots"
+        },
+        {
+          "key": "docs.developer_guide",
+          "label": "Developer Guide",
+          "type": "checkbox",
+          "default": true,
+          "description": "Architecture, code structure, contribution guide"
+        },
+        {
+          "key": "docs.api_docs",
+          "label": "API Documentation (rustdoc)",
+          "type": "checkbox",
+          "default": true,
+          "description": "Generate rustdoc for public APIs"
+        },
+        {
+          "key": "docs.architecture_diagram",
+          "label": "Architecture Diagram",
+          "type": "checkbox",
+          "default": true,
+          "description": "Visual diagram of application architecture"
+        },
+        {
+          "key": "docs.changelog",
+          "label": "CHANGELOG",
+          "type": "checkbox",
+          "default": true,
+          "description": "Track changes between versions"
+        },
+        {
+          "key": "docs.contributing",
+          "label": "CONTRIBUTING.md",
+          "type": "checkbox",
+          "default": true,
+          "description": "Contribution guidelines and PR process"
+        },
+        {
+          "key": "docs.license",
+          "label": "License File",
+          "type": "select",
+          "options": [
+            { "value": "mit", "label": "MIT" },
+            { "value": "apache2", "label": "Apache 2.0" },
+            { "value": "gpl3", "label": "GPL 3.0" },
+            { "value": "lgpl", "label": "LGPL" },
+            { "value": "proprietary", "label": "Proprietary" },
+            { "value": "none", "label": "None" }
+          ],
+          "default": "mit"
+        },
+        {
+          "key": "docs.inline_comments",
+          "label": "Inline Code Documentation",
+          "type": "select",
+          "options": [
+            { "value": "rustdoc", "label": "Rustdoc Comments (///)" },
+            { "value": "minimal", "label": "Minimal (Complex logic only)" },
+            { "value": "extensive", "label": "Extensive (All public APIs)" }
+          ],
+          "default": "rustdoc"
+        },
+        {
+          "key": "docs.slint_docs",
+          "label": "Slint Component Documentation",
+          "type": "checkbox",
+          "default": true,
+          "description": "Document Slint components with comments"
+        }
+      ]
+    },
+    {
+      "title": "Team & Code Style",
+      "icon": "👥",
+      "description": "Team collaboration and coding standards",
+      "fields": [
+        {
+          "key": "team.code_style",
+          "label": "Code Style Guide",
+          "type": "select",
+          "options": [
+            { "value": "rustfmt", "label": "rustfmt Default" },
+            { "value": "custom_rustfmt", "label": "Custom rustfmt.toml" },
+            { "value": "clippy_strict", "label": "Strict Clippy Rules" },
+            { "value": "flexible", "label": "Flexible" }
+          ],
+          "default": "rustfmt"
+        },
+        {
+          "key": "team.branch_strategy",
+          "label": "Git Branch Strategy",
+          "type": "select",
+          "options": [
+            { "value": "trunk_based", "label": "Trunk-Based Development" },
+            { "value": "gitflow", "label": "Git Flow" },
+            { "value": "feature_branch", "label": "Feature Branch Workflow" },
+            { "value": "github_flow", "label": "GitHub Flow" }
+          ],
+          "default": "github_flow"
+        },
+        {
+          "key": "team.pr_review",
+          "label": "Pull Request Reviews",
+          "type": "checkbox",
+          "default": true,
+          "description": "Require code review before merging"
+        },
+        {
+          "key": "team.commit_convention",
+          "label": "Commit Message Convention",
+          "type": "select",
+          "options": [
+            { "value": "conventional", "label": "Conventional Commits" },
+            { "value": "angular", "label": "Angular Style" },
+            { "value": "freeform", "label": "Free-form" },
+            { "value": "none", "label": "None" }
+          ],
+          "default": "conventional"
+        },
+        {
+          "key": "team.avoid_unsafe",
+          "label": "Avoid Unsafe Code",
+          "type": "checkbox",
+          "default": true,
+          "description": "No unsafe blocks unless absolutely necessary"
+        },
+        {
+          "key": "team.slint_style",
+          "label": "Slint Code Style",
+          "type": "select",
+          "options": [
+            {
+              "value": "component_per_file",
+              "label": "One Component Per File"
+            },
+            { "value": "grouped", "label": "Group Related Components" },
+            { "value": "single_file", "label": "Single File (Small apps)" }
+          ],
+          "default": "component_per_file"
+        },
+        {
+          "key": "team.naming_convention",
+          "label": "Naming Convention",
+          "type": "select",
+          "options": [
+            {
+              "value": "rust_standard",
+              "label": "Rust Standard (snake_case, PascalCase)"
+            },
+            { "value": "hungarian", "label": "Hungarian Notation" },
+            { "value": "custom", "label": "Custom Convention" }
+          ],
+          "default": "rust_standard"
+        }
+      ]
+    },
+    {
+      "title": "Generate Prompt",
+      "icon": "🚀",
+      "description": "Generate the final development prompt",
+      "fields": [
+        {
+          "key": "actions.generate_copy",
+          "label": "Generate Prompt",
+          "type": "action_button",
+          "button_text": "🚀 Generate & Copy to Clipboard",
+          "action": "generate_copy"
+        }
+      ]
+    }
+  ]
+}

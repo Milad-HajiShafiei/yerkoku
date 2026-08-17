@@ -1,0 +1,1764 @@
+{
+  "name": "Backend Application",
+  "description": "Production-ready Axum Rust backend with VPS deployment",
+  "icon": "🔧",
+  "sections": [
+    {
+      "title": "Project Overview",
+      "icon": "📋",
+      "description": "Basic project information and team context",
+      "fields": [
+        {
+          "key": "project.name",
+          "label": "Project Name",
+          "type": "text",
+          "required": true,
+          "placeholder": "e.g., Invoice API"
+        },
+        {
+          "key": "project.description",
+          "label": "Description",
+          "type": "textarea",
+          "placeholder": "Describe what your backend does, its purpose, target users, and business context"
+        },
+        {
+          "key": "project.type",
+          "label": "Project Type",
+          "type": "select",
+          "options": [
+            { "value": "greenfield", "label": "Greenfield (New Project)" },
+            { "value": "rewrite", "label": "Rewrite" },
+            { "value": "microservice", "label": "Microservice" },
+            { "value": "monolith", "label": "Modular Monolith" },
+            { "value": "extension", "label": "Extension of Existing" }
+          ],
+          "default": "greenfield"
+        },
+        {
+          "key": "project.team_size",
+          "label": "Team Size",
+          "type": "select",
+          "options": [
+            { "value": "solo", "label": "Solo Developer" },
+            { "value": "small", "label": "Small Team (2-5)" },
+            { "value": "medium", "label": "Medium Team (6-15)" },
+            { "value": "large", "label": "Large Team (16+)" }
+          ],
+          "default": "small"
+        },
+        {
+          "key": "project.code_repo",
+          "label": "Repository URL",
+          "type": "text",
+          "placeholder": "e.g., https://github.com/org/repo"
+        },
+        {
+          "key": "project.onboarding_docs",
+          "label": "Include Developer Onboarding Guide",
+          "type": "checkbox",
+          "default": true,
+          "description": "Generate setup guide for new team members"
+        }
+      ]
+    },
+    {
+      "title": "Technology Stack",
+      "icon": "⚙️",
+      "description": "Core technologies and dependencies",
+      "fields": [
+        {
+          "key": "tech.rust_version",
+          "label": "Rust Version",
+          "type": "select",
+          "options": [
+            { "value": "stable", "label": "Stable (Latest)" },
+            { "value": "1.82", "label": "1.82" },
+            { "value": "1.80", "label": "1.80" },
+            { "value": "nightly", "label": "Nightly (Experimental)" }
+          ],
+          "default": "stable"
+        },
+        {
+          "key": "tech.axum_version",
+          "label": "Axum Version",
+          "type": "crate_input",
+          "crate_name": "axum",
+          "registry": "crates.io",
+          "placeholder": "e.g., 0.8.1",
+          "default": ""
+        },
+        {
+          "key": "tech.tokio_version",
+          "label": "Tokio Version",
+          "type": "crate_input",
+          "crate_name": "tokio",
+          "registry": "crates.io",
+          "placeholder": "e.g., 1.42.0",
+          "default": ""
+        },
+        {
+          "key": "tech.serde_version",
+          "label": "Serde Version",
+          "type": "crate_input",
+          "crate_name": "serde",
+          "registry": "crates.io",
+          "placeholder": "e.g., 1.0.217",
+          "default": ""
+        },
+        {
+          "key": "tech.search_crates",
+          "label": "Search & Add Crates",
+          "type": "crate_search",
+          "target_list_key": "tech.additional_crates",
+          "registry": "crates.io",
+          "placeholder": "Type crate name (e.g., tower, tracing, uuid)"
+        },
+        {
+          "key": "tech.additional_crates",
+          "label": "Additional Crates",
+          "type": "multiselect",
+          "hidden": true,
+          "default": []
+        },
+        {
+          "key": "tech.edition",
+          "label": "Rust Edition",
+          "type": "select",
+          "options": [
+            { "value": "2024", "label": "2024" },
+            { "value": "2021", "label": "2021" },
+            { "value": "2018", "label": "2018" }
+          ],
+          "default": "2024"
+        },
+        {
+          "key": "tech.async_runtime",
+          "label": "Async Runtime",
+          "type": "select",
+          "options": [
+            { "value": "tokio", "label": "Tokio" },
+            { "value": "async-std", "label": "async-std" },
+            { "value": "smol", "label": "smol" }
+          ],
+          "default": "tokio"
+        }
+      ]
+    },
+    {
+      "title": "Architecture",
+      "icon": "🏗️",
+      "description": "Code organization and architectural patterns",
+      "fields": [
+        {
+          "key": "arch.pattern",
+          "label": "Architecture Pattern",
+          "type": "select",
+          "options": [
+            {
+              "value": "clean",
+              "label": "Clean Architecture (Handlers → Services → Repositories)"
+            },
+            { "value": "hexagonal", "label": "Hexagonal / Ports & Adapters" },
+            {
+              "value": "modular_monolith",
+              "label": "Modular Monolith (Feature-based)"
+            },
+            { "value": "ddd", "label": "Domain-Driven Design" },
+            { "value": "mvc", "label": "MVC-like Structure" },
+            { "value": "simple", "label": "Simple Flat Structure" }
+          ],
+          "default": "clean"
+        },
+        {
+          "key": "arch.layers",
+          "label": "Architecture Layers",
+          "type": "list_builder",
+          "placeholder": "e.g., handlers - HTTP request/response layer",
+          "default": []
+        },
+        {
+          "key": "arch.separation",
+          "label": "Separation of Concerns",
+          "type": "checkbox",
+          "default": true,
+          "description": "Strict separation between domain, infrastructure, and presentation"
+        },
+        {
+          "key": "arch.dependency_injection",
+          "label": "Dependency Injection",
+          "type": "select",
+          "options": [
+            {
+              "value": "trait_objects",
+              "label": "Trait Objects (Box<dyn Trait>)"
+            },
+            { "value": "generics", "label": "Generics" },
+            { "value": "arc_mutex", "label": "Arc<Mutex<>> Shared State" },
+            { "value": "manual", "label": "Manual Wiring" },
+            { "value": "none", "label": "None" }
+          ],
+          "default": "trait_objects"
+        },
+        {
+          "key": "arch.error_handling",
+          "label": "Error Handling Strategy",
+          "type": "select",
+          "options": [
+            { "value": "thiserror", "label": "thiserror (Typed errors)" },
+            { "value": "anyhow", "label": "anyhow (Dynamic errors)" },
+            { "value": "custom", "label": "Custom Error Enum" },
+            { "value": "mixed", "label": "Mixed (thiserror + anyhow)" }
+          ],
+          "default": "mixed"
+        },
+        {
+          "key": "arch.config_management",
+          "label": "Configuration Management",
+          "type": "select",
+          "options": [
+            { "value": "env_vars", "label": "Environment Variables Only" },
+            { "value": "dotenv", "label": ".env + Environment Variables" },
+            { "value": "config_file", "label": "Config File (TOML/YAML)" },
+            { "value": "figment", "label": "Figment (Layered Config)" }
+          ],
+          "default": "dotenv"
+        }
+      ]
+    },
+    {
+      "title": "API Design",
+      "icon": "🌐",
+      "description": "REST/GraphQL API structure and conventions",
+      "fields": [
+        {
+          "key": "api.style",
+          "label": "API Style",
+          "type": "select",
+          "options": [
+            { "value": "rest", "label": "REST API" },
+            { "value": "graphql", "label": "GraphQL" },
+            { "value": "grpc", "label": "gRPC" },
+            { "value": "hybrid", "label": "Hybrid (REST + GraphQL)" }
+          ],
+          "default": "rest"
+        },
+        {
+          "key": "api.versioning",
+          "label": "API Versioning",
+          "type": "select",
+          "options": [
+            { "value": "url_path", "label": "URL Path (/api/v1/)" },
+            { "value": "header", "label": "Header (Accept-Version)" },
+            { "value": "query_param", "label": "Query Parameter (?version=1)" },
+            { "value": "none", "label": "No Versioning" }
+          ],
+          "default": "url_path"
+        },
+        {
+          "key": "api.base_path",
+          "label": "Base Path",
+          "type": "text",
+          "placeholder": "/api/v1",
+          "default": "/api/v1"
+        },
+        {
+          "key": "api.endpoints",
+          "label": "API Endpoints",
+          "type": "list_builder",
+          "placeholder": "e.g., POST /users - Register new user",
+          "default": []
+        },
+        {
+          "key": "api.openapi",
+          "label": "OpenAPI / Swagger Documentation",
+          "type": "checkbox",
+          "default": true,
+          "description": "Auto-generate API documentation"
+        },
+        {
+          "key": "api.pagination",
+          "label": "Pagination Strategy",
+          "type": "select",
+          "options": [
+            { "value": "cursor", "label": "Cursor-based (Recommended)" },
+            { "value": "offset", "label": "Offset-based (Page/Limit)" },
+            { "value": "keyset", "label": "Keyset Pagination" },
+            { "value": "none", "label": "No Pagination" }
+          ],
+          "default": "cursor"
+        },
+        {
+          "key": "api.response_format",
+          "label": "Response Format",
+          "type": "select",
+          "options": [
+            { "value": "json", "label": "JSON" },
+            { "value": "json_api", "label": "JSON:API Spec" },
+            { "value": "msgpack", "label": "MessagePack" },
+            { "value": "protobuf", "label": "Protocol Buffers" }
+          ],
+          "default": "json"
+        },
+        {
+          "key": "api.error_format",
+          "label": "Error Response Format",
+          "type": "select",
+          "options": [
+            { "value": "rfc7807", "label": "RFC 7807 (Problem Details)" },
+            { "value": "custom", "label": "Custom JSON Structure" },
+            { "value": "simple", "label": "Simple { error: message }" }
+          ],
+          "default": "rfc7807"
+        },
+        {
+          "key": "api.rate_limiting",
+          "label": "Rate Limiting",
+          "type": "checkbox",
+          "default": true,
+          "description": "Limit requests per client/IP"
+        },
+        {
+          "key": "api.cors",
+          "label": "CORS Configuration",
+          "type": "checkbox",
+          "default": true,
+          "description": "Cross-Origin Resource Sharing headers"
+        },
+        {
+          "key": "api.compression",
+          "label": "Response Compression",
+          "type": "checkbox",
+          "default": true,
+          "description": "Gzip/Brotli compression for responses"
+        }
+      ]
+    },
+    {
+      "title": "Data Model",
+      "icon": "💾",
+      "description": "Database schema and entity relationships",
+      "fields": [
+        {
+          "key": "data.entities",
+          "label": "Entities / Tables",
+          "type": "textarea",
+          "placeholder": "CREATE TABLE users (\n  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),\n  email TEXT UNIQUE NOT NULL,\n  password_hash TEXT NOT NULL,\n  created_at TIMESTAMPTZ DEFAULT now()\n);"
+        },
+        {
+          "key": "data.relationships",
+          "label": "Entity Relationships",
+          "type": "list_builder",
+          "placeholder": "e.g., User has many Orders",
+          "default": []
+        },
+        {
+          "key": "data.primary_key_type",
+          "label": "Primary Key Type",
+          "type": "select",
+          "options": [
+            { "value": "uuid", "label": "UUID v4" },
+            { "value": "uuid_v7", "label": "UUID v7 (Time-ordered)" },
+            { "value": "bigint", "label": "BIGINT (Auto-increment)" },
+            { "value": "ulid", "label": "ULID" },
+            { "value": "snowflake", "label": "Snowflake ID" }
+          ],
+          "default": "uuid"
+        },
+        {
+          "key": "data.soft_delete",
+          "label": "Soft Delete",
+          "type": "checkbox",
+          "default": false,
+          "description": "Use deleted_at timestamp instead of hard delete"
+        },
+        {
+          "key": "data.audit_fields",
+          "label": "Audit Fields",
+          "type": "checkbox",
+          "default": true,
+          "description": "created_at, updated_at, created_by, updated_by"
+        },
+        {
+          "key": "data.jsonb_columns",
+          "label": "JSONB Columns",
+          "type": "checkbox",
+          "default": false,
+          "description": "Store flexible/schema-less data in JSONB"
+        },
+        {
+          "key": "data.indexes",
+          "label": "Database Indexes",
+          "type": "list_builder",
+          "placeholder": "e.g., idx_users_email ON users(email)",
+          "default": []
+        },
+        {
+          "key": "data.migrations",
+          "label": "Migration Strategy",
+          "type": "select",
+          "options": [
+            { "value": "sqlx_migrate", "label": "SQLx Migrate" },
+            { "value": "diesel_migrate", "label": "Diesel Migrations" },
+            { "value": "sea_orm_migrate", "label": "SeaORM Migrate" },
+            { "value": "custom", "label": "Custom SQL Scripts" }
+          ],
+          "default": "sqlx_migrate"
+        }
+      ]
+    },
+    {
+      "title": "Database",
+      "icon": "🗄️",
+      "description": "Database configuration and management",
+      "fields": [
+        {
+          "key": "db.engine",
+          "label": "Database Engine",
+          "type": "select",
+          "options": [
+            { "value": "postgres", "label": "PostgreSQL" },
+            { "value": "mysql", "label": "MySQL / MariaDB" },
+            { "value": "sqlite", "label": "SQLite" },
+            { "value": "mongodb", "label": "MongoDB" },
+            { "value": "cockroachdb", "label": "CockroachDB" }
+          ],
+          "default": "sqlite"
+        },
+        {
+          "key": "db.query_builder",
+          "label": "Query Builder / ORM",
+          "type": "select",
+          "options": [
+            { "value": "sqlx", "label": "SQLx (Compile-time checked)" },
+            { "value": "diesel", "label": "Diesel ORM" },
+            { "value": "sea_orm", "label": "SeaORM" },
+            { "value": "raw_sql", "label": "Raw SQL" },
+            { "value": "mongodb_driver", "label": "MongoDB Driver" }
+          ],
+          "default": "sqlx"
+        },
+        {
+          "key": "db.connection_pool",
+          "label": "Connection Pool",
+          "type": "select",
+          "options": [
+            { "value": "sqlx_pool", "label": "SQLx Pool (PgPool)" },
+            { "value": "deadpool", "label": "Deadpool" },
+            { "value": "bb8", "label": "BB8" },
+            { "value": "r2d2", "label": "R2D2" }
+          ],
+          "default": "sqlx_pool"
+        },
+        {
+          "key": "db.pool_size",
+          "label": "Connection Pool Size",
+          "type": "select",
+          "options": [
+            { "value": "5", "label": "5 connections" },
+            { "value": "10", "label": "10 connections" },
+            { "value": "20", "label": "20 connections" },
+            { "value": "50", "label": "50 connections" }
+          ],
+          "default": "10"
+        },
+        {
+          "key": "db.backups",
+          "label": "Automated Backups",
+          "type": "checkbox",
+          "default": true,
+          "description": "Daily automated database backups"
+        },
+        {
+          "key": "db.replication",
+          "label": "Read Replicas",
+          "type": "checkbox",
+          "default": false,
+          "description": "Separate read replicas for read-heavy workloads"
+        },
+        {
+          "key": "db.full_text_search",
+          "label": "Full-Text Search",
+          "type": "checkbox",
+          "default": false,
+          "description": "Enable full-text search capabilities"
+        },
+        {
+          "key": "db.timeseries",
+          "label": "Time-Series Data",
+          "type": "checkbox",
+          "default": false,
+          "description": "Time-series extension (TimescaleDB)"
+        }
+      ]
+    },
+    {
+      "title": "Authentication",
+      "icon": "🔐",
+      "description": "User authentication and session management",
+      "fields": [
+        {
+          "key": "auth.method",
+          "label": "Authentication Method",
+          "type": "select",
+          "options": [
+            { "value": "jwt", "label": "JWT (JSON Web Tokens)" },
+            { "value": "session_cookie", "label": "Session Cookie" },
+            { "value": "oauth2", "label": "OAuth2 / OpenID Connect" },
+            { "value": "api_key", "label": "API Key" },
+            { "value": "none", "label": "No Authentication" }
+          ],
+          "default": "jwt"
+        },
+        {
+          "key": "auth.password_hashing",
+          "label": "Password Hashing Algorithm",
+          "type": "select",
+          "options": [
+            { "value": "argon2id", "label": "Argon2id (Recommended)" },
+            { "value": "bcrypt", "label": "Bcrypt" },
+            { "value": "scrypt", "label": "Scrypt" },
+            { "value": "pbkdf2", "label": "PBKDF2" }
+          ],
+          "default": "argon2id"
+        },
+        {
+          "key": "auth.access_token_ttl",
+          "label": "Access Token TTL",
+          "type": "select",
+          "options": [
+            { "value": "15m", "label": "15 minutes" },
+            { "value": "30m", "label": "30 minutes" },
+            { "value": "1h", "label": "1 hour" },
+            { "value": "24h", "label": "24 hours" }
+          ],
+          "default": "15m"
+        },
+        {
+          "key": "auth.refresh_token_ttl",
+          "label": "Refresh Token TTL",
+          "type": "select",
+          "options": [
+            { "value": "7d", "label": "7 days" },
+            { "value": "14d", "label": "14 days" },
+            { "value": "30d", "label": "30 days" },
+            { "value": "90d", "label": "90 days" }
+          ],
+          "default": "30d"
+        },
+        {
+          "key": "auth.refresh_rotation",
+          "label": "Refresh Token Rotation",
+          "type": "checkbox",
+          "default": true,
+          "description": "Rotate refresh token on each use"
+        },
+        {
+          "key": "auth.mfa",
+          "label": "Multi-Factor Authentication",
+          "type": "checkbox",
+          "default": false,
+          "description": "TOTP/SMS-based 2FA"
+        },
+        {
+          "key": "auth.social_providers",
+          "label": "Social Login Providers",
+          "type": "multiselect",
+          "options": [
+            { "value": "google", "label": "Google" },
+            { "value": "github", "label": "GitHub" },
+            { "value": "microsoft", "label": "Microsoft" },
+            { "value": "apple", "label": "Apple" },
+            { "value": "discord", "label": "Discord" }
+          ],
+          "default": []
+        },
+        {
+          "key": "auth.roles",
+          "label": "User Roles",
+          "type": "list_builder",
+          "placeholder": "e.g., admin - Full access to all resources",
+          "default": []
+        }
+      ]
+    },
+    {
+      "title": "Authorization",
+      "icon": "🛡️",
+      "description": "Access control and permissions",
+      "fields": [
+        {
+          "key": "authz.model",
+          "label": "Authorization Model",
+          "type": "select",
+          "options": [
+            { "value": "rbac", "label": "Role-Based Access Control (RBAC)" },
+            {
+              "value": "abac",
+              "label": "Attribute-Based Access Control (ABAC)"
+            },
+            { "value": "pbac", "label": "Permission-Based Access Control" },
+            { "value": "custom", "label": "Custom Logic" },
+            { "value": "none", "label": "No Authorization" }
+          ],
+          "default": "rbac"
+        },
+        {
+          "key": "authz.permissions",
+          "label": "Permissions",
+          "type": "list_builder",
+          "placeholder": "e.g., users:read - Can view user profiles",
+          "default": []
+        },
+        {
+          "key": "authz.multi_tenancy",
+          "label": "Multi-Tenancy",
+          "type": "checkbox",
+          "default": false,
+          "description": "Isolate data between different tenants/organizations"
+        },
+        {
+          "key": "authz.tenant_isolation",
+          "label": "Tenant Isolation Strategy",
+          "type": "select",
+          "options": [
+            { "value": "row_level", "label": "Row-Level Security (Shared DB)" },
+            { "value": "schema_per_tenant", "label": "Schema per Tenant" },
+            { "value": "db_per_tenant", "label": "Database per Tenant" },
+            { "value": "none", "label": "None" }
+          ],
+          "default": "row_level"
+        },
+        {
+          "key": "authz.resource_ownership",
+          "label": "Resource Ownership",
+          "type": "checkbox",
+          "default": true,
+          "description": "Users can only access their own resources"
+        }
+      ]
+    },
+    {
+      "title": "Security",
+      "icon": "🔒",
+      "description": "Security hardening and best practices",
+      "fields": [
+        {
+          "key": "sec.tls",
+          "label": "TLS/HTTPS Required",
+          "type": "checkbox",
+          "default": true,
+          "description": "Enforce HTTPS for all connections"
+        },
+        {
+          "key": "sec.security_headers",
+          "label": "Security Headers",
+          "type": "checkbox",
+          "default": true,
+          "description": "X-Frame-Options, X-Content-Type-Options, CSP, etc."
+        },
+        {
+          "key": "sec.input_validation",
+          "label": "Input Validation",
+          "type": "checkbox",
+          "default": true,
+          "description": "Validate all user inputs"
+        },
+        {
+          "key": "sec.sql_injection",
+          "label": "SQL Injection Prevention",
+          "type": "checkbox",
+          "default": true,
+          "description": "Parameterized queries, no string interpolation"
+        },
+        {
+          "key": "sec.rate_limiting",
+          "label": "Rate Limiting",
+          "type": "checkbox",
+          "default": true,
+          "description": "Prevent brute force and DDoS"
+        },
+        {
+          "key": "sec.ip_whitelist",
+          "label": "IP Whitelist for Admin",
+          "type": "checkbox",
+          "default": false,
+          "description": "Restrict admin endpoints to specific IPs"
+        },
+        {
+          "key": "sec.audit_log",
+          "label": "Audit Logging",
+          "type": "checkbox",
+          "default": true,
+          "description": "Log all sensitive operations"
+        },
+        {
+          "key": "sec.secrets_management",
+          "label": "Secrets Management",
+          "type": "select",
+          "options": [
+            { "value": "env_vars", "label": "Environment Variables" },
+            { "value": "vault", "label": "HashiCorp Vault" },
+            { "value": "aws_secrets", "label": "AWS Secrets Manager" },
+            { "value": "dotenv", "label": ".env File (Development only)" }
+          ],
+          "default": "env_vars"
+        },
+        {
+          "key": "sec.pii_handling",
+          "label": "PII Data Handling",
+          "type": "checkbox",
+          "default": false,
+          "description": "Special handling for personally identifiable information"
+        },
+        {
+          "key": "sec.dependency_audit",
+          "label": "Dependency Security Audit",
+          "type": "checkbox",
+          "default": true,
+          "description": "Run cargo audit in CI pipeline"
+        }
+      ]
+    },
+    {
+      "title": "Middleware",
+      "icon": "🔗",
+      "description": "Request/response middleware pipeline",
+      "fields": [
+        {
+          "key": "mw.logging",
+          "label": "Request Logging",
+          "type": "checkbox",
+          "default": true,
+          "description": "Log all incoming requests and responses"
+        },
+        {
+          "key": "mw.tracing",
+          "label": "Distributed Tracing",
+          "type": "checkbox",
+          "default": true,
+          "description": "Request ID propagation and tracing"
+        },
+        {
+          "key": "mw.compression",
+          "label": "Response Compression",
+          "type": "checkbox",
+          "default": true,
+          "description": "Gzip/Brotli compression middleware"
+        },
+        {
+          "key": "mw.timeout",
+          "label": "Request Timeout",
+          "type": "checkbox",
+          "default": true,
+          "description": "Timeout long-running requests"
+        },
+        {
+          "key": "mw.timeout_seconds",
+          "label": "Timeout Duration (seconds)",
+          "type": "select",
+          "options": [
+            { "value": "10", "label": "10 seconds" },
+            { "value": "30", "label": "30 seconds" },
+            { "value": "60", "label": "60 seconds" },
+            { "value": "120", "label": "120 seconds" }
+          ],
+          "default": "30"
+        },
+        {
+          "key": "mw.body_limit",
+          "label": "Request Body Size Limit",
+          "type": "select",
+          "options": [
+            { "value": "1mb", "label": "1 MB" },
+            { "value": "5mb", "label": "5 MB" },
+            { "value": "10mb", "label": "10 MB" },
+            { "value": "50mb", "label": "50 MB" }
+          ],
+          "default": "10mb"
+        },
+        {
+          "key": "mw.custom_middleware",
+          "label": "Custom Middleware",
+          "type": "list_builder",
+          "placeholder": "e.g., TenantExtractor - Extract tenant from JWT",
+          "default": []
+        }
+      ]
+    },
+    {
+      "title": "Validation",
+      "icon": "✅",
+      "description": "Input validation rules and strategies",
+      "fields": [
+        {
+          "key": "val.library",
+          "label": "Validation Library",
+          "type": "select",
+          "options": [
+            { "value": "garde", "label": "Garde" },
+            { "value": "validator", "label": "Validator" },
+            { "value": "custom", "label": "Custom Validation Functions" },
+            { "value": "manual", "label": "Manual Checks" }
+          ],
+          "default": "garde"
+        },
+        {
+          "key": "val.rules",
+          "label": "Validation Rules",
+          "type": "list_builder",
+          "placeholder": "e.g., email: required, valid email, max 255 chars",
+          "default": []
+        },
+        {
+          "key": "val.sanitize",
+          "label": "Input Sanitization",
+          "type": "checkbox",
+          "default": true,
+          "description": "Strip HTML, trim whitespace, normalize inputs"
+        },
+        {
+          "key": "val.custom_validators",
+          "label": "Custom Validators",
+          "type": "list_builder",
+          "placeholder": "e.g., validate_uuid - Ensure valid UUID format",
+          "default": []
+        }
+      ]
+    },
+    {
+      "title": "Background Jobs",
+      "icon": "⏰",
+      "description": "Async tasks, queues, and scheduled jobs",
+      "fields": [
+        {
+          "key": "jobs.enabled",
+          "label": "Background Jobs Enabled",
+          "type": "checkbox",
+          "default": false,
+          "description": "Enable background task processing"
+        },
+        {
+          "key": "jobs.queue_backend",
+          "label": "Queue Backend",
+          "type": "select",
+          "options": [
+            { "value": "postgres", "label": "PostgreSQL (SQL-based queue)" },
+            { "value": "redis", "label": "Redis (Sidekiq-like)" },
+            { "value": "rabbitmq", "label": "RabbitMQ" },
+            { "value": "nats", "label": "NATS" },
+            { "value": "in_memory", "label": "In-Memory (Tokio tasks)" }
+          ],
+          "default": "postgres"
+        },
+        {
+          "key": "jobs.tasks",
+          "label": "Background Tasks",
+          "type": "list_builder",
+          "placeholder": "e.g., SendWelcomeEmail - Send email after registration",
+          "default": []
+        },
+        {
+          "key": "jobs.cron_jobs",
+          "label": "Scheduled / Cron Jobs",
+          "type": "list_builder",
+          "placeholder": "e.g., CleanExpiredTokens - Run daily at 2 AM",
+          "default": []
+        },
+        {
+          "key": "jobs.retry_policy",
+          "label": "Retry Policy",
+          "type": "select",
+          "options": [
+            { "value": "exponential", "label": "Exponential Backoff" },
+            { "value": "fixed", "label": "Fixed Interval" },
+            { "value": "linear", "label": "Linear Backoff" },
+            { "value": "none", "label": "No Retry" }
+          ],
+          "default": "exponential"
+        },
+        {
+          "key": "jobs.max_retries",
+          "label": "Max Retries",
+          "type": "select",
+          "options": [
+            { "value": "1", "label": "1 retry" },
+            { "value": "3", "label": "3 retries" },
+            { "value": "5", "label": "5 retries" },
+            { "value": "10", "label": "10 retries" }
+          ],
+          "default": "3"
+        },
+        {
+          "key": "jobs.dead_letter",
+          "label": "Dead Letter Queue",
+          "type": "checkbox",
+          "default": true,
+          "description": "Store failed jobs for manual review"
+        }
+      ]
+    },
+    {
+      "title": "Caching",
+      "icon": "⚡",
+      "description": "Caching strategy and implementation",
+      "fields": [
+        {
+          "key": "cache.enabled",
+          "label": "Caching Enabled",
+          "type": "checkbox",
+          "default": true,
+          "description": "Enable response/data caching"
+        },
+        {
+          "key": "cache.backend",
+          "label": "Cache Backend",
+          "type": "select",
+          "options": [
+            { "value": "redis", "label": "Redis" },
+            { "value": "memcached", "label": "Memcached" },
+            { "value": "in_memory", "label": "In-Memory (DashMap/Moka)" },
+            { "value": "database", "label": "Database Table" },
+            { "value": "none", "label": "None" }
+          ],
+          "default": "redis"
+        },
+        {
+          "key": "cache.strategy",
+          "label": "Caching Strategy",
+          "type": "select",
+          "options": [
+            { "value": "cache_aside", "label": "Cache-Aside (Lazy Loading)" },
+            { "value": "write_through", "label": "Write-Through" },
+            { "value": "write_behind", "label": "Write-Behind (Write-Back)" },
+            { "value": "refresh_ahead", "label": "Refresh-Ahead" }
+          ],
+          "default": "cache_aside"
+        },
+        {
+          "key": "cache.ttl",
+          "label": "Default Cache TTL",
+          "type": "select",
+          "options": [
+            { "value": "1m", "label": "1 minute" },
+            { "value": "5m", "label": "5 minutes" },
+            { "value": "15m", "label": "15 minutes" },
+            { "value": "1h", "label": "1 hour" },
+            { "value": "24h", "label": "24 hours" }
+          ],
+          "default": "5m"
+        },
+        {
+          "key": "cache.invalidation",
+          "label": "Cache Invalidation Strategy",
+          "type": "select",
+          "options": [
+            { "value": "ttl_only", "label": "TTL-based Only" },
+            { "value": "event_based", "label": "Event-Based Invalidation" },
+            { "value": "manual", "label": "Manual Invalidation" },
+            { "value": "versioned_keys", "label": "Versioned Cache Keys" }
+          ],
+          "default": "ttl_only"
+        },
+        {
+          "key": "cache.keys",
+          "label": "Cache Keys to Implement",
+          "type": "list_builder",
+          "placeholder": "e.g., user:{id} - User profile cache",
+          "default": []
+        }
+      ]
+    },
+    {
+      "title": "File Storage",
+      "icon": "📁",
+      "description": "File upload and storage handling",
+      "fields": [
+        {
+          "key": "files.enabled",
+          "label": "File Upload Enabled",
+          "type": "checkbox",
+          "default": false,
+          "description": "Enable file upload functionality"
+        },
+        {
+          "key": "files.storage_backend",
+          "label": "Storage Backend",
+          "type": "select",
+          "options": [
+            { "value": "local_disk", "label": "Local Disk" },
+            { "value": "aws_s3", "label": "AWS S3" },
+            { "value": "minio", "label": "MinIO (S3-compatible)" },
+            { "value": "gcs", "label": "Google Cloud Storage" },
+            { "value": "azure_blob", "label": "Azure Blob Storage" }
+          ],
+          "default": "local_disk"
+        },
+        {
+          "key": "files.max_size",
+          "label": "Max File Size",
+          "type": "select",
+          "options": [
+            { "value": "1mb", "label": "1 MB" },
+            { "value": "5mb", "label": "5 MB" },
+            { "value": "10mb", "label": "10 MB" },
+            { "value": "50mb", "label": "50 MB" },
+            { "value": "100mb", "label": "100 MB" }
+          ],
+          "default": "10mb"
+        },
+        {
+          "key": "files.allowed_types",
+          "label": "Allowed File Types",
+          "type": "list_builder",
+          "placeholder": "e.g., image/png, application/pdf",
+          "default": []
+        },
+        {
+          "key": "files.virus_scan",
+          "label": "Virus Scanning",
+          "type": "checkbox",
+          "default": false,
+          "description": "Scan uploaded files for malware"
+        },
+        {
+          "key": "files.signed_urls",
+          "label": "Signed URLs for Download",
+          "type": "checkbox",
+          "default": false,
+          "description": "Generate temporary signed URLs for file access"
+        }
+      ]
+    },
+    {
+      "title": "External Integrations",
+      "icon": "🔌",
+      "description": "Third-party services and webhooks",
+      "fields": [
+        {
+          "key": "integrations.email",
+          "label": "Email Service",
+          "type": "select",
+          "options": [
+            { "value": "sendgrid", "label": "SendGrid" },
+            { "value": "ses", "label": "AWS SES" },
+            { "value": "mailgun", "label": "Mailgun" },
+            { "value": "smtp", "label": "SMTP" },
+            { "value": "resend", "label": "Resend" },
+            { "value": "none", "label": "None" }
+          ],
+          "default": "none"
+        },
+        {
+          "key": "integrations.sms",
+          "label": "SMS Service",
+          "type": "select",
+          "options": [
+            { "value": "twilio", "label": "Twilio" },
+            { "value": "aws_sns", "label": "AWS SNS" },
+            { "value": "vonage", "label": "Vonage" },
+            { "value": "none", "label": "None" }
+          ],
+          "default": "none"
+        },
+        {
+          "key": "integrations.payment",
+          "label": "Payment Gateway",
+          "type": "select",
+          "options": [
+            { "value": "stripe", "label": "Stripe" },
+            { "value": "paypal", "label": "PayPal" },
+            { "value": "braintree", "label": "Braintree" },
+            { "value": "none", "label": "None" }
+          ],
+          "default": "none"
+        },
+        {
+          "key": "integrations.webhooks",
+          "label": "Webhook Endpoints",
+          "type": "list_builder",
+          "placeholder": "e.g., POST /webhooks/stripe - Payment events",
+          "default": []
+        },
+        {
+          "key": "integrations.custom",
+          "label": "Custom Integrations",
+          "type": "list_builder",
+          "placeholder": "e.g., Slack notifications for critical events",
+          "default": []
+        }
+      ]
+    },
+    {
+      "title": "Observability",
+      "icon": "👁️",
+      "description": "Logging, metrics, and monitoring",
+      "fields": [
+        {
+          "key": "obs.structured_logging",
+          "label": "Structured Logging",
+          "type": "checkbox",
+          "default": true,
+          "description": "JSON-formatted logs with tracing"
+        },
+        {
+          "key": "obs.log_format",
+          "label": "Log Format",
+          "type": "select",
+          "options": [
+            { "value": "json", "label": "JSON (Production)" },
+            { "value": "pretty", "label": "Pretty (Development)" },
+            { "value": "compact", "label": "Compact" }
+          ],
+          "default": "json"
+        },
+        {
+          "key": "obs.metrics",
+          "label": "Metrics Collection",
+          "type": "select",
+          "options": [
+            { "value": "prometheus", "label": "Prometheus" },
+            { "value": "statsd", "label": "StatsD" },
+            { "value": "opentelemetry", "label": "OpenTelemetry" },
+            { "value": "none", "label": "None" }
+          ],
+          "default": "prometheus"
+        },
+        {
+          "key": "obs.tracing",
+          "label": "Distributed Tracing",
+          "type": "select",
+          "options": [
+            { "value": "opentelemetry", "label": "OpenTelemetry" },
+            { "value": "jaeger", "label": "Jaeger" },
+            { "value": "zipkin", "label": "Zipkin" },
+            { "value": "none", "label": "None" }
+          ],
+          "default": "opentelemetry"
+        },
+        {
+          "key": "obs.health_endpoint",
+          "label": "Health Check Endpoint",
+          "type": "checkbox",
+          "default": true,
+          "description": "GET /health for load balancer checks"
+        },
+        {
+          "key": "obs.readiness_endpoint",
+          "label": "Readiness Probe",
+          "type": "checkbox",
+          "default": true,
+          "description": "GET /ready for deployment readiness"
+        },
+        {
+          "key": "obs.log_levels",
+          "label": "Log Levels",
+          "type": "multiselect",
+          "options": [
+            { "value": "error", "label": "Error" },
+            { "value": "warn", "label": "Warning" },
+            { "value": "info", "label": "Info" },
+            { "value": "debug", "label": "Debug" },
+            { "value": "trace", "label": "Trace" }
+          ],
+          "default": ["error", "warn", "info"]
+        },
+        {
+          "key": "obs.sensitive_data",
+          "label": "Redact Sensitive Data in Logs",
+          "type": "checkbox",
+          "default": true,
+          "description": "Never log passwords, tokens, or PII"
+        }
+      ]
+    },
+    {
+      "title": "Testing",
+      "icon": "🧪",
+      "description": "Testing strategy and coverage",
+      "fields": [
+        {
+          "key": "test.unit",
+          "label": "Unit Tests",
+          "type": "checkbox",
+          "default": true,
+          "description": "Test individual functions and methods"
+        },
+        {
+          "key": "test.integration",
+          "label": "Integration Tests",
+          "type": "checkbox",
+          "default": true,
+          "description": "Test API endpoints with real database"
+        },
+        {
+          "key": "test.e2e",
+          "label": "End-to-End Tests",
+          "type": "checkbox",
+          "default": false,
+          "description": "Full workflow tests"
+        },
+        {
+          "key": "test.tool",
+          "label": "Test Database Strategy",
+          "type": "select",
+          "options": [
+            { "value": "testcontainers", "label": "Testcontainers (Docker)" },
+            { "value": "ephemeral_db", "label": "Ephemeral Database" },
+            { "value": "mock_db", "label": "Mock Database" },
+            { "value": "sqlite_memory", "label": "SQLite In-Memory" }
+          ],
+          "default": "testcontainers"
+        },
+        {
+          "key": "test.coverage_target",
+          "label": "Code Coverage Target",
+          "type": "select",
+          "options": [
+            { "value": "60", "label": "60%" },
+            { "value": "70", "label": "70%" },
+            { "value": "80", "label": "80%" },
+            { "value": "90", "label": "90%+" }
+          ],
+          "default": "80"
+        },
+        {
+          "key": "test.fixtures",
+          "label": "Test Fixtures",
+          "type": "list_builder",
+          "placeholder": "e.g., create_user - Factory for test user creation",
+          "default": []
+        },
+        {
+          "key": "test.benchmarks",
+          "label": "Performance Benchmarks",
+          "type": "checkbox",
+          "default": false,
+          "description": "Criterion benchmarks for hot paths"
+        }
+      ]
+    },
+    {
+      "title": "Performance",
+      "icon": "🚀",
+      "description": "Performance targets and optimization",
+      "fields": [
+        {
+          "key": "perf.expected_rps",
+          "label": "Expected Requests/Second",
+          "type": "select",
+          "options": [
+            { "value": "100", "label": "100 RPS" },
+            { "value": "500", "label": "500 RPS" },
+            { "value": "1000", "label": "1,000 RPS" },
+            { "value": "5000", "label": "5,000 RPS" },
+            { "value": "10000", "label": "10,000+ RPS" }
+          ],
+          "default": "1000"
+        },
+        {
+          "key": "perf.latency_target",
+          "label": "Latency Target (p95)",
+          "type": "select",
+          "options": [
+            { "value": "50ms", "label": "50ms" },
+            { "value": "100ms", "label": "100ms" },
+            { "value": "200ms", "label": "200ms" },
+            { "value": "500ms", "label": "500ms" }
+          ],
+          "default": "100ms"
+        },
+        {
+          "key": "perf.concurrency",
+          "label": "Concurrency Model",
+          "type": "select",
+          "options": [
+            { "value": "async", "label": "Fully Async (Tokio)" },
+            { "value": "thread_pool", "label": "Thread Pool" },
+            { "value": "hybrid", "label": "Hybrid (Async + Blocking)" }
+          ],
+          "default": "async"
+        },
+        {
+          "key": "perf.connection_pooling",
+          "label": "Database Connection Pooling",
+          "type": "checkbox",
+          "default": true,
+          "description": "Reuse database connections"
+        },
+        {
+          "key": "perf.response_compression",
+          "label": "Response Compression",
+          "type": "checkbox",
+          "default": true,
+          "description": "Compress responses to reduce bandwidth"
+        },
+        {
+          "key": "perf.batch_operations",
+          "label": "Batch Operations",
+          "type": "checkbox",
+          "default": false,
+          "description": "Support batch/bulk endpoints"
+        }
+      ]
+    },
+    {
+      "title": "Scalability",
+      "icon": "📈",
+      "description": "Horizontal scaling and high availability",
+      "fields": [
+        {
+          "key": "scale.stateless",
+          "label": "Stateless Service",
+          "type": "checkbox",
+          "default": true,
+          "description": "No in-memory session state"
+        },
+        {
+          "key": "scale.horizontal",
+          "label": "Horizontal Scaling",
+          "type": "checkbox",
+          "default": true,
+          "description": "Can run multiple instances behind load balancer"
+        },
+        {
+          "key": "scale.load_balancer",
+          "label": "Load Balancer",
+          "type": "select",
+          "options": [
+            { "value": "nginx", "label": "Nginx" },
+            { "value": "traefik", "label": "Traefik" },
+            { "value": "caddy", "label": "Caddy" },
+            { "value": "aws_alb", "label": "AWS ALB" },
+            { "value": "cloudflare", "label": "Cloudflare" },
+            { "value": "none", "label": "None" }
+          ],
+          "default": "nginx"
+        },
+        {
+          "key": "scale.session_sharing",
+          "label": "Shared Session Store",
+          "type": "checkbox",
+          "default": true,
+          "description": "Use Redis for session/token storage"
+        },
+        {
+          "key": "scale.graceful_shutdown",
+          "label": "Graceful Shutdown",
+          "type": "checkbox",
+          "default": true,
+          "description": "Finish in-flight requests before shutdown"
+        },
+        {
+          "key": "scale.zero_downtime",
+          "label": "Zero-Downtime Deployment",
+          "type": "checkbox",
+          "default": true,
+          "description": "Rolling updates without service interruption"
+        }
+      ]
+    },
+    {
+      "title": "VPS Deployment",
+      "icon": "🖥️",
+      "description": "VPS server setup and deployment configuration",
+      "fields": [
+        {
+          "key": "vps.provider",
+          "label": "VPS Provider",
+          "type": "select",
+          "options": [
+            { "value": "digitalocean", "label": "DigitalOcean" },
+            { "value": "hetzner", "label": "Hetzner" },
+            { "value": "linode", "label": "Linode / Akamai" },
+            { "value": "vultr", "label": "Vultr" },
+            { "value": "aws_ec2", "label": "AWS EC2" },
+            { "value": "gcp", "label": "Google Cloud Compute" },
+            { "value": "azure", "label": "Azure VM" },
+            { "value": "self_hosted", "label": "Self-Hosted / Bare Metal" }
+          ],
+          "default": "hetzner"
+        },
+        {
+          "key": "vps.os",
+          "label": "Operating System",
+          "type": "select",
+          "options": [
+            { "value": "ubuntu_24", "label": "Ubuntu 24.04 LTS" },
+            { "value": "ubuntu_22", "label": "Ubuntu 22.04 LTS" },
+            { "value": "debian_12", "label": "Debian 12 (Bookworm)" },
+            { "value": "fedora", "label": "Fedora Server" },
+            { "value": "arch", "label": "Arch Linux" },
+            { "value": "rocky", "label": "Rocky Linux 9" }
+          ],
+          "default": "ubuntu_24"
+        },
+        {
+          "key": "vps.cpu",
+          "label": "CPU Cores",
+          "type": "select",
+          "options": [
+            { "value": "1", "label": "1 vCPU" },
+            { "value": "2", "label": "2 vCPU" },
+            { "value": "4", "label": "4 vCPU" },
+            { "value": "8", "label": "8+ vCPU" }
+          ],
+          "default": "2"
+        },
+        {
+          "key": "vps.ram",
+          "label": "RAM",
+          "type": "select",
+          "options": [
+            { "value": "1gb", "label": "1 GB" },
+            { "value": "2gb", "label": "2 GB" },
+            { "value": "4gb", "label": "4 GB" },
+            { "value": "8gb", "label": "8+ GB" }
+          ],
+          "default": "4gb"
+        },
+        {
+          "key": "vps.reverse_proxy",
+          "label": "Reverse Proxy",
+          "type": "select",
+          "options": [
+            { "value": "nginx", "label": "Nginx" },
+            { "value": "caddy", "label": "Caddy (Auto SSL)" },
+            { "value": "traefik", "label": "Traefik" },
+            { "value": "none", "label": "None (Direct)" }
+          ],
+          "default": "caddy"
+        },
+        {
+          "key": "vps.ssl",
+          "label": "SSL/TLS Certificate",
+          "type": "select",
+          "options": [
+            { "value": "letsencrypt", "label": "Let's Encrypt (Free)" },
+            { "value": "cloudflare", "label": "Cloudflare SSL" },
+            { "value": "self_signed", "label": "Self-Signed (Development)" },
+            { "value": "custom", "label": "Custom Certificate" }
+          ],
+          "default": "letsencrypt"
+        },
+        {
+          "key": "vps.domain",
+          "label": "Domain Name",
+          "type": "text",
+          "placeholder": "e.g., api.example.com"
+        },
+        {
+          "key": "vps.docker",
+          "label": "Docker Deployment",
+          "type": "checkbox",
+          "default": true,
+          "description": "Deploy using Docker containers"
+        },
+        {
+          "key": "vps.docker_compose",
+          "label": "Docker Compose",
+          "type": "checkbox",
+          "default": true,
+          "description": "Multi-container orchestration with Compose"
+        },
+        {
+          "key": "vps.systemd",
+          "label": "Systemd Service",
+          "type": "checkbox",
+          "default": false,
+          "description": "Run as systemd service (non-Docker)"
+        },
+        {
+          "key": "vps.firewall",
+          "label": "Firewall Configuration",
+          "type": "checkbox",
+          "default": true,
+          "description": "UFW/nftables firewall rules"
+        },
+        {
+          "key": "vps.ssh_hardening",
+          "label": "SSH Hardening",
+          "type": "checkbox",
+          "default": true,
+          "description": "Key-only auth, disable root login"
+        },
+        {
+          "key": "vps.monitoring",
+          "label": "Server Monitoring",
+          "type": "select",
+          "options": [
+            { "value": "netdata", "label": "Netdata" },
+            { "value": "prometheus_grafana", "label": "Prometheus + Grafana" },
+            { "value": "datadog", "label": "Datadog" },
+            { "value": "uptime_kuma", "label": "Uptime Kuma" },
+            { "value": "none", "label": "None" }
+          ],
+          "default": "netdata"
+        },
+        {
+          "key": "vps.backup_strategy",
+          "label": "Backup Strategy",
+          "type": "select",
+          "options": [
+            { "value": "daily", "label": "Daily Backups" },
+            { "value": "hourly", "label": "Hourly Backups" },
+            { "value": "weekly", "label": "Weekly Backups" },
+            { "value": "none", "label": "None" }
+          ],
+          "default": "daily"
+        }
+      ]
+    },
+    {
+      "title": "CI/CD Pipeline",
+      "icon": "🔄",
+      "description": "Continuous integration and deployment",
+      "fields": [
+        {
+          "key": "ci.platform",
+          "label": "CI/CD Platform",
+          "type": "select",
+          "options": [
+            { "value": "github_actions", "label": "GitHub Actions" },
+            { "value": "gitlab_ci", "label": "GitLab CI" },
+            { "value": "circleci", "label": "CircleCI" },
+            { "value": "drone", "label": "Drone CI" },
+            { "value": "none", "label": "None" }
+          ],
+          "default": "github_actions"
+        },
+        {
+          "key": "ci.lint",
+          "label": "Linting (cargo clippy)",
+          "type": "checkbox",
+          "default": true,
+          "description": "Run clippy with warnings as errors"
+        },
+        {
+          "key": "ci.format_check",
+          "label": "Format Check (cargo fmt)",
+          "type": "checkbox",
+          "default": true,
+          "description": "Ensure code formatting consistency"
+        },
+        {
+          "key": "ci.test",
+          "label": "Run Tests",
+          "type": "checkbox",
+          "default": true,
+          "description": "Run all unit and integration tests"
+        },
+        {
+          "key": "ci.security_audit",
+          "label": "Security Audit (cargo audit)",
+          "type": "checkbox",
+          "default": true,
+          "description": "Check for known vulnerabilities in dependencies"
+        },
+        {
+          "key": "ci.deny",
+          "label": "Cargo Deny Checks",
+          "type": "checkbox",
+          "default": true,
+          "description": "License and dependency checks"
+        },
+        {
+          "key": "ci.docker_build",
+          "label": "Docker Image Build",
+          "type": "checkbox",
+          "default": true,
+          "description": "Build and push Docker image"
+        },
+        {
+          "key": "ci.deploy_staging",
+          "label": "Deploy to Staging",
+          "type": "checkbox",
+          "default": true,
+          "description": "Auto-deploy to staging environment"
+        },
+        {
+          "key": "ci.deploy_production",
+          "label": "Deploy to Production",
+          "type": "select",
+          "options": [
+            { "value": "manual", "label": "Manual Approval Required" },
+            { "value": "auto", "label": "Automatic on Merge" },
+            { "value": "tagged", "label": "On Tag Release" },
+            { "value": "none", "label": "None" }
+          ],
+          "default": "manual"
+        }
+      ]
+    },
+    {
+      "title": "Documentation",
+      "icon": "📚",
+      "description": "Documentation for team and API consumers",
+      "fields": [
+        {
+          "key": "docs.readme",
+          "label": "Comprehensive README",
+          "type": "checkbox",
+          "default": true,
+          "description": "Setup instructions, architecture overview, usage"
+        },
+        {
+          "key": "docs.api_docs",
+          "label": "API Documentation",
+          "type": "select",
+          "options": [
+            { "value": "openapi_ui", "label": "OpenAPI + Swagger UI" },
+            { "value": "openapi_json", "label": "OpenAPI JSON Only" },
+            { "value": "markdown", "label": "Markdown API Docs" },
+            { "value": "none", "label": "None" }
+          ],
+          "default": "openapi_ui"
+        },
+        {
+          "key": "docs.architecture_diagram",
+          "label": "Architecture Diagram",
+          "type": "checkbox",
+          "default": true,
+          "description": "Visual diagram of system architecture"
+        },
+        {
+          "key": "docs.onboarding_guide",
+          "label": "Developer Onboarding Guide",
+          "type": "checkbox",
+          "default": true,
+          "description": "Step-by-step setup for new developers"
+        },
+        {
+          "key": "docs.runbook",
+          "label": "Operations Runbook",
+          "type": "checkbox",
+          "default": true,
+          "description": "Deployment, troubleshooting, and incident response"
+        },
+        {
+          "key": "docs.api_changelog",
+          "label": "API Changelog",
+          "type": "checkbox",
+          "default": true,
+          "description": "Track API changes between versions"
+        },
+        {
+          "key": "docs.code_comments",
+          "label": "Inline Code Documentation",
+          "type": "select",
+          "options": [
+            { "value": "rustdoc", "label": "Rustdoc Comments (///)" },
+            { "value": "minimal", "label": "Minimal (Only complex logic)" },
+            { "value": "extensive", "label": "Extensive (All public APIs)" }
+          ],
+          "default": "rustdoc"
+        },
+        {
+          "key": "docs.adr",
+          "label": "Architecture Decision Records",
+          "type": "checkbox",
+          "default": false,
+          "description": "Document major architectural decisions"
+        },
+        {
+          "key": "docs.env_template",
+          "label": ".env.example Template",
+          "type": "checkbox",
+          "default": true,
+          "description": "Document all required environment variables"
+        },
+        {
+          "key": "docs.contributing",
+          "label": "CONTRIBUTING.md Guide",
+          "type": "checkbox",
+          "default": true,
+          "description": "Contribution guidelines and PR process"
+        }
+      ]
+    },
+    {
+      "title": "Team & Code Style",
+      "icon": "👥",
+      "description": "Team collaboration and coding standards",
+      "fields": [
+        {
+          "key": "team.code_style",
+          "label": "Code Style Guide",
+          "type": "select",
+          "options": [
+            { "value": "rustfmt", "label": "rustfmt Default" },
+            { "value": "custom_rustfmt", "label": "Custom rustfmt.toml" },
+            { "value": "clippy_strict", "label": "Strict Clippy Rules" },
+            { "value": "flexible", "label": "Flexible (Team consensus)" }
+          ],
+          "default": "rustfmt"
+        },
+        {
+          "key": "team.branch_strategy",
+          "label": "Git Branch Strategy",
+          "type": "select",
+          "options": [
+            { "value": "trunk_based", "label": "Trunk-Based Development" },
+            { "value": "gitflow", "label": "Git Flow" },
+            { "value": "feature_branch", "label": "Feature Branch Workflow" },
+            { "value": "github_flow", "label": "GitHub Flow" }
+          ],
+          "default": "github_flow"
+        },
+        {
+          "key": "team.pr_review",
+          "label": "Pull Request Reviews",
+          "type": "checkbox",
+          "default": true,
+          "description": "Require code review before merging"
+        },
+        {
+          "key": "team.commit_convention",
+          "label": "Commit Message Convention",
+          "type": "select",
+          "options": [
+            { "value": "conventional", "label": "Conventional Commits" },
+            { "value": "angular", "label": "Angular Style" },
+            { "value": "freeform", "label": "Free-form" },
+            { "value": "none", "label": "None" }
+          ],
+          "default": "conventional"
+        },
+        {
+          "key": "team.avoid_unsafe",
+          "label": "Avoid Unsafe Code",
+          "type": "checkbox",
+          "default": true,
+          "description": "No unsafe blocks unless absolutely necessary"
+        },
+        {
+          "key": "team.thin_handlers",
+          "label": "Thin Handlers (Business Logic in Services)",
+          "type": "checkbox",
+          "default": true,
+          "description": "Keep HTTP handlers minimal, delegate to services"
+        },
+        {
+          "key": "team.dto_separation",
+          "label": "DTO Separation (Request/Response vs Domain Models)",
+          "type": "checkbox",
+          "default": true,
+          "description": "Separate API DTOs from internal domain models"
+        }
+      ]
+    },
+    {
+      "title": "Generate Prompt",
+      "icon": "🚀",
+      "description": "Generate the final development prompt",
+      "fields": [
+        {
+          "key": "actions.generate_copy",
+          "label": "Generate Prompt",
+          "type": "action_button",
+          "button_text": "🚀 Generate & Copy to Clipboard",
+          "action": "generate_copy"
+        }
+      ]
+    }
+  ]
+}
