@@ -694,47 +694,52 @@ fn handle_form_key(app: &mut App, code: KeyCode, modifiers: event::KeyModifiers)
                         app.form.start_editing();
                     }
                 }
-                FieldType::ListBuilder => match app.form.sub_focus {
-                    0 => {
-                        app.form.start_editing();
-                        let value = app.form.get_list_input_value();
-                        app.form.cursor_pos = value.len();
-                    }
-                    1 => {
-                        let value = app.form.get_list_input_value();
-                        let trimmed = value.trim().to_string();
-                        if !trimmed.is_empty() {
-                            app.form.add_list_item(trimmed);
-                            app.form.clear_list_input();
+                                FieldType::ListBuilder => {
+                    match app.form.sub_focus {
+                        0 => {
+                            // Start editing the INPUT BUFFER, not the main field
+                            app.form.editing = true;
+                            app.form.text_scroll_offset = 0;
+                            let input_value = app.form.get_list_input_value();
+                            app.form.cursor_pos = input_value.len();
                         }
-                        app.form.sub_focus = 0;
-                    }
-                    _ => {}
-                },
-                FieldType::CrateSearch => match app.form.sub_focus {
-                    0 => {
-                        app.form.start_editing();
-                        let value = app.form.get_list_input_value();
-                        app.form.cursor_pos = value.len();
-                    }
-                    1 => {
-                        let value = app.form.get_list_input_value();
-                        let trimmed = value.trim().to_string();
-                        if !trimmed.is_empty() {
-                            let target_key = field
-                                .target_list_key
-                                .as_deref()
-                                .unwrap_or("tech.additional_crates")
-                                .to_string();
-                            let registry = field.registry.clone();
-
-                            app.search_target_key = Some(target_key);
-                            trigger_crate_search(app, &trimmed, true, &registry);
+                        1 => {
+                            let value = app.form.get_list_input_value();
+                            let trimmed = value.trim().to_string();
+                            if !trimmed.is_empty() {
+                                app.form.add_list_item(trimmed);
+                                app.form.clear_list_input();
+                            }
+                            app.form.sub_focus = 0;
                         }
-                        app.form.sub_focus = 0;
+                        _ => {}
                     }
-                    _ => {}
-                },
+                }
+                FieldType::CrateSearch => {
+                    match app.form.sub_focus {
+                        0 => {
+                            // Start editing the INPUT BUFFER, not the main field
+                            app.form.editing = true;
+                            app.form.text_scroll_offset = 0;
+                            let input_value = app.form.get_list_input_value();
+                            app.form.cursor_pos = input_value.len();
+                        }
+                        1 => {
+                            let value = app.form.get_list_input_value();
+                            let trimmed = value.trim().to_string();
+                            if !trimmed.is_empty() {
+                                let target_key = field.target_list_key.as_deref()
+                                    .unwrap_or("tech.additional_crates")
+                                    .to_string();
+                                let registry = field.registry.clone();
+                                app.search_target_key = Some(target_key);
+                                trigger_crate_search(app, &trimmed, true, &registry);
+                            }
+                            app.form.sub_focus = 0;
+                        }
+                        _ => {}
+                    }
+                }
                 FieldType::ActionButton => {
                     // DO NOT trigger on Enter - just show hint
                     app.status_message = Some("Press SPACE to activate this button".to_string());
@@ -766,17 +771,21 @@ fn handle_form_key(app: &mut App, code: KeyCode, modifiers: event::KeyModifiers)
         },
 
         // Edit shortcut
-        KeyCode::Char('e') => match field_type {
-            FieldType::Text | FieldType::Textarea | FieldType::CrateInput => {
-                app.form.start_editing();
+        KeyCode::Char('e') => {
+            match field_type {
+                FieldType::Text | FieldType::Textarea | FieldType::CrateInput => {
+                    app.form.start_editing();
+                }
+                FieldType::ListBuilder | FieldType::CrateSearch => {
+                    // Edit the INPUT BUFFER, not the main field
+                    app.form.editing = true;
+                    app.form.text_scroll_offset = 0;
+                    let input_value = app.form.get_list_input_value();
+                    app.form.cursor_pos = input_value.len();
+                }
+                _ => {}
             }
-            FieldType::ListBuilder | FieldType::CrateSearch => {
-                app.form.start_editing();
-                let value = app.form.get_list_input_value();
-                app.form.cursor_pos = value.len();
-            }
-            _ => {}
-        },
+        }
 
         // Section navigation
         KeyCode::Char('n') => {

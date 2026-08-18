@@ -1,7 +1,8 @@
-use crate::blueprint::{Blueprint, list_blueprints};
+use crate::blueprint::{Blueprint, FieldValue, list_blueprints};
 use crate::draft::{Draft, DraftManager};
 use crate::form::Form;
 use anyhow::Result;
+use std::collections::BTreeMap;
 use std::fs;
 use std::path::PathBuf;
 use std::sync::mpsc;
@@ -233,20 +234,28 @@ impl App {
 
     pub fn save_current_draft(&mut self) -> Result<()> {
         if let Some(blueprint) = &self.current_blueprint {
-            // Use existing draft name if we have one, otherwise create a new name
             let draft_name = self.current_draft_name.clone().unwrap_or_else(|| {
                 format!("{}_draft", blueprint.name.to_lowercase().replace(' ', "_"))
             });
 
+            // Filter out internal input buffer keys before saving
+            let filtered_values: BTreeMap<String, FieldValue> = self
+                .form
+                .values
+                .iter()
+                .filter(|(k, _)| !k.starts_with("__input_"))
+                .map(|(k, v)| (k.clone(), v.clone()))
+                .collect();
+
             let mut draft = Draft::new(
                 draft_name.clone(),
                 blueprint.name.clone(),
-                self.form.values.clone(),
+                filtered_values,
                 self.form.current_section,
                 self.form.selected_field,
             );
 
-            // If this is an existing draft, preserve the created_at timestamp
+            // Preserve created_at for existing drafts
             if let Some(existing_name) = &self.current_draft_name {
                 let path = self
                     .draft_manager

@@ -94,21 +94,19 @@ impl Form {
             return;
         }
 
-        // Clamp current position
+        // Clear input buffer of current list_builder before leaving
+        self.clear_list_input_if_active();
+
         if self.selected_field >= count {
             self.selected_field = count - 1;
         }
 
-        // Move to next field with wrap
         self.selected_field = (self.selected_field + 1) % count;
-
-        // Reset editing state
         self.editing = false;
         self.cursor_pos = 0;
         self.sub_focus = 0;
         self.text_scroll_offset = 0;
         self.list_selected = 0;
-
         self.ensure_visible();
     }
 
@@ -118,26 +116,38 @@ impl Form {
             return;
         }
 
-        // Clamp current position
+        // Clear input buffer of current list_builder before leaving
+        self.clear_list_input_if_active();
+
         if self.selected_field >= count {
             self.selected_field = count - 1;
         }
 
-        // Move to previous field with wrap
         if self.selected_field == 0 {
             self.selected_field = count - 1;
         } else {
             self.selected_field -= 1;
         }
-
-        // Reset editing state
         self.editing = false;
         self.cursor_pos = 0;
         self.sub_focus = 0;
         self.text_scroll_offset = 0;
         self.list_selected = 0;
-
         self.ensure_visible();
+    }
+
+    /// Clear the input buffer only if the current field is a list_builder or crate_search
+    fn clear_list_input_if_active(&mut self) {
+        if let Some(key) = self.get_current_key().cloned() {
+            if let Some(field_type) = self.field_types.get(&key) {
+                if matches!(field_type, FieldType::ListBuilder | FieldType::CrateSearch) {
+                    // Don't clear the stored input — just stop editing
+                    // The input buffer persists so users can come back to it
+                    self.editing = false;
+                    self.cursor_pos = 0;
+                }
+            }
+        }
     }
 
     pub fn next_section(&mut self) {
@@ -431,6 +441,10 @@ impl Form {
     // List builder methods
     // ─────────────────────────────────────────────
 
+    // ─────────────────────────────────────────────
+    // List builder methods
+    // ─────────────────────────────────────────────
+
     pub fn add_list_item(&mut self, item: String) {
         if item.is_empty() {
             return;
@@ -456,9 +470,10 @@ impl Form {
         }
     }
 
+    /// Each list_builder field gets its OWN input buffer key
     pub fn get_list_input_value(&self) -> String {
         if let Some(key) = self.get_current_key() {
-            let input_key = format!("{}_input", key);
+            let input_key = format!("__input_{}", key);
             self.values
                 .get(&input_key)
                 .map(|v| v.as_str().to_string())
@@ -470,7 +485,7 @@ impl Form {
 
     pub fn set_list_input_value(&mut self, value: String) {
         if let Some(key) = self.get_current_key().cloned() {
-            let input_key = format!("{}_input", key);
+            let input_key = format!("__input_{}", key);
             self.values.insert(input_key, FieldValue::Text(value));
         }
     }

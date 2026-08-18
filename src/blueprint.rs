@@ -136,9 +136,9 @@ impl FieldValue {
     pub fn is_empty(&self) -> bool {
         match self {
             FieldValue::Empty => true,
-            FieldValue::Text(s) => s.is_empty(),
-            FieldValue::Number(_) => false,
-            FieldValue::Bool(_) => false,
+            FieldValue::Text(s) => s.trim().is_empty(),
+            FieldValue::Bool(b) => !b,
+            FieldValue::Number(n) => *n == 0.0,
             FieldValue::Array(v) => v.is_empty(),
         }
     }

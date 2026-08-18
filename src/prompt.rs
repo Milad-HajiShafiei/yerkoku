@@ -81,6 +81,18 @@ pub fn generate_prompt(blueprint: &Blueprint, form: &Form) -> String {
                         prompt.push_str("\n```\n\n");
                     }
                 }
+
+                FieldType::ListBuilder => {
+                    let items = value.as_vec();
+                    if !items.is_empty() {
+                        prompt.push_str(&format!("### {}\n\n", field.label));
+                        for item in &items {
+                            prompt.push_str(&format!("- {}\n", item));
+                        }
+                        prompt.push('\n');
+                    }
+                }
+
                 _ => {
                     let text = value.as_str();
                     if !text.is_empty() {
@@ -100,7 +112,9 @@ pub fn generate_prompt(blueprint: &Blueprint, form: &Form) -> String {
     prompt.push_str("3. Include configuration files\n");
     prompt.push_str("4. Add a comprehensive README.md\n");
     prompt.push_str("5. Include setup and usage instructions\n");
-    prompt.push_str("6. If response is too long, split into parts\n\n");
+    prompt.push_str("6. If response is too long, split into parts\n");
+    prompt
+        .push_str("7. Search the web and use the most up-to-date dependencies & technologies\n\n");
     prompt.push_str("Generate the complete application now.\n");
 
     prompt
