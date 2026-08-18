@@ -1,6 +1,6 @@
 [package]
 name = "yerkoku"
-version = "0.1.0"
+version = "0.1.1"
 edition = "2024"
 homepage = "https://github.com/Milad-HajiShafiei/yerkoku"
 repository = "https://github.com/Milad-HajiShafiei/yerkoku"

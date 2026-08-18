@@ -32,8 +32,9 @@ const DEFAULT_DESKTOP: &str = include_str!("../blueprints/desktop.json");
 
 
 // ─────────────────────────────────────────────
-// Debug logging helper (Fixes "Cannot find debug_log")
+// Debug logging helper (only active in debug builds)
 // ─────────────────────────────────────────────
+#[cfg(debug_assertions)]
 fn debug_log(msg: &str) {
     if let Ok(mut file) = std::fs::OpenOptions::new()
         .create(true)
@@ -44,6 +45,10 @@ fn debug_log(msg: &str) {
     }
 }
 
+#[cfg(not(debug_assertions))]
+fn debug_log(_msg: &str) {
+    // No-op in release builds — no file created
+}
 
 // ─────────────────────────────────────────────
 // CLI Argument Parser
