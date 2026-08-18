@@ -8,7 +8,7 @@ readme = "README.md"
 description = "Blueprint-driven TUI for generating development prompts"
 authors = ["Milad Hajishafiei"]
 license = "MIT"
-keywords = ["tui", "prompt-engineering", "cli", "ratatui", "ai", "prompt"]
+keywords = ["tui", "prompt-engineering", "cli", "ratatui", "ai"]
 categories = ["command-line-utilities", "development-tools"]
 
 # Exclude heavy/unnecessary files from the published crate
