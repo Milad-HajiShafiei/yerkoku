@@ -270,7 +270,7 @@
           "label": "Routing Library",
           "type": "select",
           "options": [
-            { "value": "react_router", "label": "React Router v7" },
+            { "value": "react_router", "label": "React Router v8" },
             { "value": "tanstack_router", "label": "TanStack Router" },
             { "value": "nextjs_router", "label": "Next.js App Router" },
             { "value": "remix_router", "label": "Remix Router" },
