@@ -5,8 +5,9 @@ use crossterm::{
     terminal::{EnterAlternateScreen, LeaveAlternateScreen, disable_raw_mode, enable_raw_mode},
 };
 use ratatui::{Terminal, backend::CrosstermBackend};
-use std::io::Write;
+use std::{fs, io::Write};
 use std::{io, sync::mpsc};
+use clap::Parser;
 
 mod app;
 mod blueprint;
@@ -20,40 +21,134 @@ mod widgets;
 use app::{App, Screen};
 use blueprint::{FieldType, FieldValue};
 
-// ─────────────────────────────────────────────
-// Debug logging
-// ─────────────────────────────────────────────
 
+// ─────────────────────────────────────────────
+// Embed default blueprints into the binary at compile time
+// ─────────────────────────────────────────────
+const DEFAULT_BACKEND: &str = include_str!("../blueprints/backend.json");
+const DEFAULT_FRONTEND: &str = include_str!("../blueprints/frontend.json");
+const DEFAULT_MOBILE: &str = include_str!("../blueprints/mobile.json");
+const DEFAULT_DESKTOP: &str = include_str!("../blueprints/desktop.json");
+
+
+// ─────────────────────────────────────────────
+// Debug logging helper (Fixes "Cannot find debug_log")
+// ─────────────────────────────────────────────
 fn debug_log(msg: &str) {
     if let Ok(mut file) = std::fs::OpenOptions::new()
         .create(true)
         .append(true)
         .open("debug.log")
     {
-        let _ = writeln!(
-            file,
-            "[{}] {}",
-            chrono::Local::now().format("%H:%M:%S%.3f"),
-            msg
-        );
+        let _ = writeln!(file, "[{}] {}", chrono::Local::now().format("%H:%M:%S%.3f"), msg);
+    }
+}
+
+
+// ─────────────────────────────────────────────
+// CLI Argument Parser
+// ─────────────────────────────────────────────
+#[derive(Parser, Debug)]
+#[command(
+    author, 
+    version, 
+    about = "Generate comprehensive AI development prompts from JSON blueprints.",
+    long_about = None
+)]
+struct Cli {
+    /// Force reset and re-install default blueprints into the app data directory
+    #[arg(short, long)]
+    init: bool,
+
+    /// Custom path to blueprints directory (overrides default app data location)
+    #[arg(short, long)]
+    blueprints: Option<String>,
+}
+
+// ─────────────────────────────────────────────
+// Initialization Logic
+// ─────────────────────────────────────────────
+fn init_default_blueprints(force: bool) {
+    let mut blueprints_dir = app::get_app_data_dir();
+    blueprints_dir.push("blueprints");
+
+    // Check if we need to initialize
+    let needs_init = if !blueprints_dir.exists() {
+        true
+    } else if force {
+        true // User passed --init flag
+    } else {
+        // Check if directory is empty or has no json files
+        match fs::read_dir(&blueprints_dir) {
+            Ok(entries) => {
+                let has_json = entries.filter_map(Result::ok).any(|e| {
+                    e.path().extension().and_then(|s| s.to_str()) == Some("json")
+                });
+                !has_json
+            }
+            Err(_) => true,
+        }
+    };
+
+    if needs_init {
+        if let Err(e) = fs::create_dir_all(&blueprints_dir) {
+            eprintln!("⚠ Warning: Failed to create blueprints directory: {}", e);
+            return;
+        }
+
+        let files = [
+            ("backend.json", DEFAULT_BACKEND),
+            ("frontend.json", DEFAULT_FRONTEND),
+            ("mobile.json", DEFAULT_MOBILE),
+            ("desktop.json", DEFAULT_DESKTOP),
+        ];
+
+        let mut success_count = 0;
+        for (filename, content) in files {
+            let path = blueprints_dir.join(filename);
+            // Only write if forcing or file doesn't exist
+            if force || !path.exists() {
+                match fs::write(&path, content) {
+                    Ok(_) => success_count += 1,
+                    Err(e) => eprintln!("⚠ Warning: Failed to write {}: {}", filename, e),
+                }
+            }
+        }
+
+        if success_count > 0 {
+            eprintln!(
+                "✓ Initialized {} default blueprint(s) in: {}",
+                success_count,
+                blueprints_dir.display()
+            );
+        }
     }
 }
 
 // ─────────────────────────────────────────────
 // Main entry point
 // ─────────────────────────────────────────────
-
 fn main() -> Result<()> {
+    // 1. Parse CLI arguments
+    let cli = Cli::parse();
+
+    // 2. Initialize default blueprints (runs BEFORE App::new)
+    init_default_blueprints(cli.init);
+
+    // 3. Setup terminal
     enable_raw_mode()?;
     let mut stdout = io::stdout();
     execute!(stdout, EnterAlternateScreen, EnableMouseCapture)?;
     let backend = CrosstermBackend::new(stdout);
     let mut terminal = Terminal::new(backend)?;
 
-    let mut app = App::new();
+    // 4. Create App — pass custom blueprints path directly (no unsafe needed!)
+    let mut app = App::new(cli.blueprints);
 
+    // 5. Run the app
     let result = run_app(&mut terminal, &mut app);
 
+    // 6. Cleanup terminal
     disable_raw_mode()?;
     execute!(
         terminal.backend_mut(),
@@ -156,7 +251,14 @@ fn handle_prompt_generation(app: &mut App) {
     if let Some(blueprint) = &app.current_blueprint {
         let prompt_text = prompt::generate_prompt(blueprint, &app.form);
 
-        let prompts_dir = std::path::PathBuf::from("prompts");
+        // Create prompts directory in OS app data
+        let mut prompts_dir = crate::app::get_app_data_dir();
+        prompts_dir.push("prompts");
+
+        if !prompts_dir.exists() {
+            let _ = std::fs::create_dir_all(&prompts_dir);
+        }
+
         if let Err(e) = std::fs::create_dir_all(&prompts_dir) {
             app.show_error(
                 "Directory Error",

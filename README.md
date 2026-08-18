@@ -64,7 +64,7 @@ cargo install --path .
 cargo run
 
 # Or if installed globally
-prompt-generator
+yerkoku
 ```
 
 ### Workflow

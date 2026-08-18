@@ -4,6 +4,7 @@ use std::collections::BTreeMap;
 use std::fs;
 use std::path::{Path, PathBuf};
 
+use crate::app::get_app_data_dir;
 use crate::blueprint::FieldValue;
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -53,7 +54,7 @@ impl DraftManager {
     }
 
     fn find_drafts_dir() -> PathBuf {
-        // Try environment variable first
+        // 1. Check environment variable override (useful for development)
         if let Ok(dir) = std::env::var("DRAFTS_DIR") {
             let path = PathBuf::from(&dir);
             if path.exists() || fs::create_dir_all(&path).is_ok() {
@@ -61,37 +62,15 @@ impl DraftManager {
             }
         }
 
-        // Try relative to current directory
-        let cwd_drafts = PathBuf::from("drafts");
-        if cwd_drafts.exists() || fs::create_dir_all(&cwd_drafts).is_ok() {
-            return cwd_drafts;
+        // 2. Use OS-specific app data directory
+        let mut drafts_dir = get_app_data_dir();
+        drafts_dir.push("drafts");
+
+        if !drafts_dir.exists() {
+            let _ = fs::create_dir_all(&drafts_dir);
         }
 
-        // Try relative to executable
-        if let Ok(exe_path) = std::env::current_exe() {
-            if let Some(exe_dir) = exe_path.parent() {
-                let exe_drafts = exe_dir.join("drafts");
-                if exe_drafts.exists() || fs::create_dir_all(&exe_drafts).is_ok() {
-                    return exe_drafts;
-                }
-
-                // Also check parent directories
-                if let Some(parent) = exe_dir.parent() {
-                    let parent_drafts = parent.join("drafts");
-                    if parent_drafts.exists() || fs::create_dir_all(&parent_drafts).is_ok() {
-                        return parent_drafts;
-                    }
-                    if let Some(grandparent) = parent.parent() {
-                        let gp_drafts = grandparent.join("drafts");
-                        if gp_drafts.exists() || fs::create_dir_all(&gp_drafts).is_ok() {
-                            return gp_drafts;
-                        }
-                    }
-                }
-            }
-        }
-
-        PathBuf::from("drafts")
+        drafts_dir
     }
 
     /// List all drafts sorted by most recent

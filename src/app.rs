@@ -2,6 +2,7 @@ use crate::blueprint::{Blueprint, list_blueprints};
 use crate::draft::{Draft, DraftManager};
 use crate::form::Form;
 use anyhow::Result;
+use std::fs;
 use std::path::PathBuf;
 use std::sync::mpsc;
 
@@ -52,8 +53,8 @@ pub struct App {
 }
 
 impl App {
-    pub fn new() -> Self {
-        let blueprints_dir = Self::find_blueprints_dir();
+    pub fn new(custom_blueprints_dir: Option<String>) -> Self {
+        let blueprints_dir = Self::find_blueprints_dir(custom_blueprints_dir);
         let blueprints = list_blueprints(&blueprints_dir);
         let draft_manager = DraftManager::new();
         let drafts = draft_manager.list_drafts();
@@ -110,39 +111,35 @@ impl App {
         }
     }
 
-    fn find_blueprints_dir() -> String {
+    fn find_blueprints_dir(custom_path: Option<String>) -> String {
+        // 1. Use custom path if provided via CLI
+        if let Some(custom) = custom_path {
+            if PathBuf::from(&custom).exists() {
+                return custom;
+            }
+        }
+
+        // 2. Check environment variable override
         if let Ok(dir) = std::env::var("BLUEPRINTS_DIR") {
             if PathBuf::from(&dir).exists() {
                 return dir;
             }
         }
 
+        // 3. Current working directory (for development)
         let cwd_blueprints = PathBuf::from("blueprints");
         if cwd_blueprints.exists() {
             return "blueprints".to_string();
         }
 
-        if let Ok(exe_path) = std::env::current_exe() {
-            if let Some(exe_dir) = exe_path.parent() {
-                let exe_blueprints = exe_dir.join("blueprints");
-                if exe_blueprints.exists() {
-                    return exe_blueprints.to_string_lossy().to_string();
-                }
-                if let Some(parent) = exe_dir.parent() {
-                    let parent_blueprints = parent.join("blueprints");
-                    if parent_blueprints.exists() {
-                        return parent_blueprints.to_string_lossy().to_string();
-                    }
-                    if let Some(grandparent) = parent.parent() {
-                        let gp_blueprints = grandparent.join("blueprints");
-                        if gp_blueprints.exists() {
-                            return gp_blueprints.to_string_lossy().to_string();
-                        }
-                    }
-                }
-            }
+        // 4. OS-specific app data directory
+        let mut app_blueprints = get_app_data_dir();
+        app_blueprints.push("blueprints");
+        if app_blueprints.exists() {
+            return app_blueprints.to_string_lossy().to_string();
         }
 
+        // Fallback
         "blueprints".to_string()
     }
 
@@ -327,4 +324,18 @@ impl App {
     pub fn has_error(&self) -> bool {
         self.error_message.is_some()
     }
+}
+
+/// Gets the OS-specific application data directory
+/// Linux: ~/.local/share/yerkoku
+/// macOS: ~/Library/Application Support/yerkoku
+/// Windows: C:\Users\Username\AppData\Roaming\yerkoku
+pub fn get_app_data_dir() -> PathBuf {
+    let mut path = dirs::data_dir().unwrap_or_else(|| PathBuf::from("."));
+    path.push("yerkoku"); // Your app name
+
+    if !path.exists() {
+        let _ = fs::create_dir_all(&path);
+    }
+    path
 }
