@@ -57,25 +57,31 @@
           "label": "Minimum iOS Version",
           "type": "select",
           "options": [
+            { "value": "27", "label": "iOS 27+" },
+            { "value": "26", "label": "iOS 26+" },
+            { "value": "18", "label": "iOS 18+" },
             { "value": "17", "label": "iOS 17+" },
             { "value": "16", "label": "iOS 16+" },
             { "value": "15", "label": "iOS 15+" },
             { "value": "14", "label": "iOS 14+" }
           ],
-          "default": "16"
+          "default": "18"
         },
         {
           "key": "project.min_android_version",
           "label": "Minimum Android Version",
           "type": "select",
           "options": [
+            { "value": "17", "label": "Android 17 (API 37)" },
+            { "value": "16", "label": "Android 16 (API 36)" },
+            { "value": "15", "label": "Android 15 (API 35)" },
             { "value": "14", "label": "Android 14 (API 34)" },
             { "value": "13", "label": "Android 13 (API 33)" },
             { "value": "12", "label": "Android 12 (API 31)" },
             { "value": "11", "label": "Android 11 (API 30)" },
             { "value": "10", "label": "Android 10 (API 29)" }
           ],
-          "default": "12"
+          "default": "15"
         },
         {
           "key": "project.team_size",
@@ -101,13 +107,23 @@
           "label": "React Native Version",
           "type": "select",
           "options": [
-            { "value": "0.76", "label": "0.76 (Latest)" },
-            { "value": "0.75", "label": "0.75" },
-            { "value": "0.74", "label": "0.74" },
-            { "value": "expo_52", "label": "Expo SDK 52 (Latest)" },
-            { "value": "expo_51", "label": "Expo SDK 51" }
+            { "value": "0.87", "label": "0.87 (Latest)" },
+            { "value": "0.86", "label": "0.86" },
+            { "value": "0.85", "label": "0.85" },
+            { "value": "0.84", "label": "0.84" },
+            { "value": "0.83", "label": "0.83" },
+            { "value": "0.82", "label": "0.82" },
+            { "value": "0.81", "label": "0.81" },
+            { "value": "0.80", "label": "0.80" },
+            { "value": "0.79", "label": "0.79" },
+            { "value": "0.78", "label": "0.78" },
+            { "value": "0.77", "label": "0.77" },
+            { "value": "expo_57", "label": "Expo SDK 57" },
+            { "value": "expo_56", "label": "Expo SDK 56" },
+            { "value": "expo_55", "label": "Expo SDK 55" },
+            { "value": "expo_54", "label": "Expo SDK 54" }
           ],
-          "default": "0.76"
+          "default": "0.87"
         },
         {
           "key": "tech.framework",
@@ -364,7 +380,7 @@
           "label": "Animation Library",
           "type": "select",
           "options": [
-            { "value": "reanimated", "label": "React Native Reanimated 3" },
+            { "value": "reanimated", "label": "React Native Reanimated 4" },
             { "value": "moti", "label": "Moti (Reanimated wrapper)" },
             { "value": "animated_api", "label": "Built-in Animated API" },
             { "value": "lottie", "label": "Lottie Animations" },
