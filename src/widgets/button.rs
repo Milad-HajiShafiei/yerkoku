@@ -33,6 +33,7 @@ impl Button {
 
         let outer_block = Block::default()
             .title(format!(" {} ", self.label))
+            .title_alignment(Alignment::Center)
             .borders(Borders::ALL)
             .border_type(BorderType::Rounded)
             .border_style(Style::default().fg(border_color));

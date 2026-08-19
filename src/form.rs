@@ -13,6 +13,7 @@ pub struct Form {
     pub total_sections: usize,
     pub sub_focus: usize,
     pub list_selected: usize,
+    pub list_scroll_offset: usize,
     pub visible_field_count: usize,
     pub text_scroll_offset: u16,
 }
@@ -48,6 +49,7 @@ impl Form {
             total_sections: blueprint.sections.len(),
             sub_focus: 0,
             list_selected: 0,
+            list_scroll_offset: 0,
             visible_field_count: 5,
             text_scroll_offset: 0,
         }
@@ -70,7 +72,6 @@ impl Form {
             .unwrap_or(0)
     }
 
-    #[allow(dead_code)]
     pub fn is_multiline(&self) -> bool {
         if let Some(key) = self.get_current_key() {
             if let Some(field_type) = self.field_types.get(key) {
@@ -94,9 +95,6 @@ impl Form {
             return;
         }
 
-        // Clear input buffer of current list_builder before leaving
-        self.clear_list_input_if_active();
-
         if self.selected_field >= count {
             self.selected_field = count - 1;
         }
@@ -107,6 +105,7 @@ impl Form {
         self.sub_focus = 0;
         self.text_scroll_offset = 0;
         self.list_selected = 0;
+        self.list_scroll_offset = 0;
         self.ensure_visible();
     }
 
@@ -115,9 +114,6 @@ impl Form {
         if count == 0 {
             return;
         }
-
-        // Clear input buffer of current list_builder before leaving
-        self.clear_list_input_if_active();
 
         if self.selected_field >= count {
             self.selected_field = count - 1;
@@ -133,25 +129,12 @@ impl Form {
         self.sub_focus = 0;
         self.text_scroll_offset = 0;
         self.list_selected = 0;
+        self.list_scroll_offset = 0;
         self.ensure_visible();
     }
 
-    /// Clear the input buffer only if the current field is a list_builder or crate_search
-    fn clear_list_input_if_active(&mut self) {
-        if let Some(key) = self.get_current_key().cloned() {
-            if let Some(field_type) = self.field_types.get(&key) {
-                if matches!(field_type, FieldType::ListBuilder | FieldType::CrateSearch) {
-                    // Don't clear the stored input — just stop editing
-                    // The input buffer persists so users can come back to it
-                    self.editing = false;
-                    self.cursor_pos = 0;
-                }
-            }
-        }
-    }
-
     pub fn next_section(&mut self) {
-        if self.current_section < self.total_sections - 1 {
+        if self.current_section < self.total_sections.saturating_sub(1) {
             self.current_section += 1;
         } else {
             self.current_section = 0;
@@ -163,6 +146,7 @@ impl Form {
         self.sub_focus = 0;
         self.text_scroll_offset = 0;
         self.list_selected = 0;
+        self.list_scroll_offset = 0;
     }
 
     pub fn prev_section(&mut self) {
@@ -178,6 +162,7 @@ impl Form {
         self.sub_focus = 0;
         self.text_scroll_offset = 0;
         self.list_selected = 0;
+        self.list_scroll_offset = 0;
     }
 
     #[allow(dead_code)]
@@ -191,6 +176,7 @@ impl Form {
             self.sub_focus = 0;
             self.text_scroll_offset = 0;
             self.list_selected = 0;
+            self.list_scroll_offset = 0;
         }
     }
 
@@ -204,23 +190,18 @@ impl Form {
             return;
         }
 
-        // Clamp selected field
         if self.selected_field >= count {
             self.selected_field = count - 1;
         }
 
         let visible = self.visible_field_count.max(1);
 
-        // If selected field is above visible area, scroll up
         if self.selected_field < self.scroll_offset {
             self.scroll_offset = self.selected_field;
-        }
-        // If selected field is below visible area, scroll down
-        else if self.selected_field >= self.scroll_offset + visible {
+        } else if self.selected_field >= self.scroll_offset + visible {
             self.scroll_offset = self.selected_field.saturating_sub(visible - 1);
         }
 
-        // Clamp scroll offset
         let max_scroll = count.saturating_sub(visible);
         if self.scroll_offset > max_scroll {
             self.scroll_offset = max_scroll;
@@ -294,7 +275,6 @@ impl Form {
                     updated_pos = Some(pos + c.len_utf8());
                 }
             } else {
-                // If field is empty or not text, create new string
                 let mut s = String::new();
                 s.insert(pos, c);
                 self.values.insert(key, FieldValue::Text(s));
@@ -438,11 +418,7 @@ impl Form {
     }
 
     // ─────────────────────────────────────────────
-    // List builder methods
-    // ─────────────────────────────────────────────
-
-    // ─────────────────────────────────────────────
-    // List builder methods
+    // List builder methods (isolated input buffers)
     // ─────────────────────────────────────────────
 
     pub fn add_list_item(&mut self, item: String) {
@@ -470,7 +446,7 @@ impl Form {
         }
     }
 
-    /// Each list_builder field gets its OWN input buffer key
+    /// Each list_builder field gets its OWN isolated input buffer
     pub fn get_list_input_value(&self) -> String {
         if let Some(key) = self.get_current_key() {
             let input_key = format!("__input_{}", key);
@@ -517,10 +493,6 @@ impl Form {
     // Target list methods (for crate_search)
     // ─────────────────────────────────────────────
 
-    // ─────────────────────────────────────────────
-    // Target list methods (for crate_search)
-    // ─────────────────────────────────────────────
-
     pub fn get_target_list(&self, target_key: &str) -> Vec<String> {
         self.values
             .get(target_key)
@@ -555,6 +527,22 @@ impl Form {
     pub fn clear_target_list(&mut self, target_key: &str) {
         self.values
             .insert(target_key.to_string(), FieldValue::Array(Vec::new()));
+    }
+
+    /// Get input buffer value for a SPECIFIC field key (used by rendering)
+    pub fn get_list_input_value_for_key(&self, key: &str) -> String {
+        let input_key = format!("__input_{}", key);
+        self.values
+            .get(&input_key)
+            .map(|v| v.as_str().to_string())
+            .unwrap_or_default()
+    }
+
+    #[allow(dead_code)]
+    /// Set input buffer value for a SPECIFIC field key (used by rendering)
+    pub fn set_list_input_value_for_key(&mut self, key: &str, value: String) {
+        let input_key = format!("__input_{}", key);
+        self.values.insert(input_key, FieldValue::Text(value));
     }
 
     // ─────────────────────────────────────────────

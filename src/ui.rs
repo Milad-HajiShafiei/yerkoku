@@ -39,8 +39,7 @@ pub fn render(f: &mut Frame, app: &App) {
     f.render_widget(bg, size);
 
     match app.current_screen {
-        Screen::Menu => render_menu(f, app, size),
-        Screen::Drafts => render_drafts(f, app, size),
+        Screen::Menu | Screen::Drafts => render_combined_screen(f, app, size),
         Screen::Form => render_form_split(f, app, size),
         Screen::Review => render_review(f, app, size),
         Screen::Success => {
@@ -49,34 +48,87 @@ pub fn render(f: &mut Frame, app: &App) {
         }
     }
 
-    // ── Error modal appears on top of everything ──
+    // Exit confirmation modal (on top of form)
+    if app.show_exit_confirm {
+        render_exit_confirm_modal(f, app, size);
+    }
+
+    // Error modal appears on top of everything
     if app.has_error() {
         render_error_modal(f, app, size);
     }
 }
 
 // ─────────────────────────────────────────────
-// Menu screen
+// Combined Blueprints + Drafts screen
 // ─────────────────────────────────────────────
 
-fn render_menu(f: &mut Frame, app: &App, area: Rect) {
+fn render_combined_screen(f: &mut Frame, app: &App, area: Rect) {
     let chunks = Layout::default()
         .direction(Direction::Vertical)
         .constraints([
-            Constraint::Length(3),
-            Constraint::Min(0),
-            Constraint::Length(3),
+            Constraint::Length(3), // Header
+            Constraint::Min(0),    // Content (two panels)
+            Constraint::Length(3), // Footer
         ])
         .split(area);
 
+    // Header
     let header = Block::default()
-        .title("🦀 Prompt Generator - Select Blueprint")
+        .title(" 🥕 Yerkoku 🥕 — AI Prompt Generator")
         .title_alignment(Alignment::Center)
         .borders(Borders::ALL)
         .border_type(BorderType::Rounded)
         .border_style(Style::default().fg(COLOR_ACCENT))
         .style(Style::default().bg(COLOR_SIDEBAR));
     f.render_widget(header, chunks[0]);
+
+    // Content: two panels side by side
+    let content_chunks = Layout::default()
+        .direction(Direction::Horizontal)
+        .constraints([Constraint::Percentage(50), Constraint::Percentage(50)])
+        .split(chunks[1]);
+
+    render_blueprints_panel(f, app, content_chunks[0]);
+    render_drafts_panel(f, app, content_chunks[1]);
+
+    // Footer
+    let footer_text = match app.panel_focus {
+        crate::app::PanelFocus::Blueprints => {
+            "↑/↓: Navigate | Enter: Select | Tab/→: Drafts | r: Refresh | q: Quit"
+        }
+        crate::app::PanelFocus::Drafts => {
+            "↑/↓: Navigate | Enter: Open | d: Delete | Tab/←: Blueprints | n: New | q: Quit"
+        }
+    };
+
+    let footer = Paragraph::new(Line::from(vec![
+        Span::styled(" ⌨  ", Style::default().fg(COLOR_ACCENT)),
+        Span::styled(footer_text, Style::default().fg(COLOR_TEXT)),
+    ]))
+    .block(
+        Block::default()
+            .borders(Borders::ALL)
+            .border_type(BorderType::Rounded)
+            .border_style(Style::default().fg(COLOR_BORDER)),
+    );
+    f.render_widget(footer, chunks[2]);
+}
+
+fn render_blueprints_panel(f: &mut Frame, app: &App, area: Rect) {
+    let is_focused = matches!(app.panel_focus, crate::app::PanelFocus::Blueprints);
+
+    let border_color = if is_focused {
+        COLOR_ACCENT
+    } else {
+        COLOR_BORDER
+    };
+
+    let title = if is_focused {
+        format!(" 📂 Blueprints ({}) ", app.blueprints.len())
+    } else {
+        format!(" 📂 Blueprints ({}) ", app.blueprints.len())
+    };
 
     if app.blueprints.is_empty() {
         let empty = Paragraph::new(vec![
@@ -86,193 +138,145 @@ fn render_menu(f: &mut Frame, app: &App, area: Rect) {
                 Style::default().fg(COLOR_WARNING),
             )),
             Line::from(Span::styled(
-                "Create JSON files in blueprints/ folder",
+                "Run with --init to install defaults",
                 Style::default().fg(COLOR_DIM),
             )),
         ])
         .alignment(Alignment::Center)
         .block(
             Block::default()
-                .title("📂 Available Blueprints")
+                .title(title)
                 .borders(Borders::ALL)
                 .border_type(BorderType::Rounded)
-                .border_style(Style::default().fg(COLOR_BORDER)),
+                .border_style(Style::default().fg(border_color)),
         );
-        f.render_widget(empty, chunks[1]);
-    } else {
-        let items: Vec<ListItem> = app
-            .blueprints
-            .iter()
-            .enumerate()
-            .map(|(i, bp)| {
-                let selected = i == app.selected_blueprint;
-                let style = if selected {
-                    Style::default()
-                        .fg(COLOR_ACCENT)
-                        .add_modifier(Modifier::BOLD)
-                } else {
-                    Style::default().fg(COLOR_TEXT)
-                };
-                let prefix = if selected { "▶ " } else { "  " };
-                ListItem::new(Line::from(vec![
-                    Span::styled(prefix, style),
-                    Span::styled(format!("{} ", bp.icon), style),
-                    Span::styled(&bp.name, style),
-                    Span::styled(
-                        format!(" - {}", bp.description),
-                        Style::default().fg(COLOR_DIM),
-                    ),
-                ]))
-            })
-            .collect();
-
-        let list = List::new(items)
-            .block(
-                Block::default()
-                    .title(format!(
-                        "📂 Available Blueprints ({})",
-                        app.blueprints.len()
-                    ))
-                    .borders(Borders::ALL)
-                    .border_type(BorderType::Rounded)
-                    .border_style(Style::default().fg(COLOR_BORDER)),
-            )
-            .highlight_style(
-                Style::default()
-                    .bg(Color::Rgb(60, 60, 80))
-                    .add_modifier(Modifier::BOLD),
-            );
-
-        let mut state = ListState::default();
-        state.select(Some(app.selected_blueprint));
-        f.render_stateful_widget(list, chunks[1], &mut state);
+        f.render_widget(empty, area);
+        return;
     }
 
-    let footer = Paragraph::new(Line::from(vec![
-        Span::styled(" ⌨  ", Style::default().fg(COLOR_ACCENT)),
-        Span::styled(
-            "↑/↓: Navigate | Enter: Select | r: Refresh | q: Quit",
-            Style::default().fg(COLOR_TEXT),
-        ),
-    ]))
-    .block(
-        Block::default()
-            .borders(Borders::ALL)
-            .border_type(BorderType::Rounded)
-            .border_style(Style::default().fg(COLOR_BORDER)),
-    );
-    f.render_widget(footer, chunks[2]);
+    let items: Vec<ListItem> = app
+        .blueprints
+        .iter()
+        .enumerate()
+        .map(|(i, bp)| {
+            let selected = i == app.selected_blueprint && is_focused;
+            let style = if selected {
+                Style::default()
+                    .fg(COLOR_ACCENT)
+                    .add_modifier(Modifier::BOLD)
+            } else {
+                Style::default().fg(COLOR_TEXT)
+            };
+            let prefix = if selected { "▶ " } else { "  " };
+            ListItem::new(Line::from(vec![
+                Span::styled(prefix, style),
+                Span::styled(format!("{} ", bp.icon), style),
+                Span::styled(&bp.name, style),
+                Span::styled(
+                    format!("  {}", bp.description),
+                    Style::default().fg(COLOR_DIM),
+                ),
+            ]))
+        })
+        .collect();
+
+    let list = List::new(items)
+        .block(
+            Block::default()
+                .title(title)
+                .borders(Borders::ALL)
+                .border_type(BorderType::Rounded)
+                .border_style(Style::default().fg(border_color)),
+        )
+        .highlight_style(
+            Style::default()
+                .bg(Color::Rgb(60, 60, 80))
+                .add_modifier(Modifier::BOLD),
+        );
+
+    let mut state = ListState::default();
+    state.select(Some(app.selected_blueprint));
+    f.render_stateful_widget(list, area, &mut state);
 }
 
-// ─────────────────────────────────────────────
-// Drafts screen
-// ─────────────────────────────────────────────
+fn render_drafts_panel(f: &mut Frame, app: &App, area: Rect) {
+    let is_focused = matches!(app.panel_focus, crate::app::PanelFocus::Drafts);
 
-fn render_drafts(f: &mut Frame, app: &App, area: Rect) {
-    let chunks = Layout::default()
-        .direction(Direction::Vertical)
-        .constraints([
-            Constraint::Length(3),
-            Constraint::Min(0),
-            Constraint::Length(3),
-        ])
-        .split(area);
+    let border_color = if is_focused {
+        COLOR_ACCENT
+    } else {
+        COLOR_BORDER
+    };
 
-    let header = Block::default()
-        .title("📝 Prompt Generator - Saved Drafts")
-        .title_alignment(Alignment::Center)
-        .borders(Borders::ALL)
-        .border_type(BorderType::Rounded)
-        .border_style(Style::default().fg(COLOR_ACCENT))
-        .style(Style::default().bg(COLOR_SIDEBAR));
-    f.render_widget(header, chunks[0]);
+    let title = format!(" 📝 Drafts ({}) ", app.drafts.len());
 
     if app.drafts.is_empty() {
         let empty = Paragraph::new(vec![
             Line::from(""),
             Line::from(Span::styled(
-                "No drafts found!",
-                Style::default().fg(COLOR_WARNING),
+                "No drafts yet!",
+                Style::default().fg(COLOR_DIM),
             )),
             Line::from(Span::styled(
-                "Press 'n' to start a new project",
+                "Select a blueprint to start",
                 Style::default().fg(COLOR_DIM),
             )),
         ])
         .alignment(Alignment::Center)
         .block(
             Block::default()
-                .title("📂 Saved Drafts")
+                .title(title)
                 .borders(Borders::ALL)
                 .border_type(BorderType::Rounded)
-                .border_style(Style::default().fg(COLOR_BORDER)),
+                .border_style(Style::default().fg(border_color)),
         );
-        f.render_widget(empty, chunks[1]);
-    } else {
-        let items: Vec<ListItem> = app
-            .drafts
-            .iter()
-            .enumerate()
-            .map(|(i, (_filename, draft))| {
-                let selected = i == app.selected_draft;
-                let style = if selected {
-                    Style::default()
-                        .fg(COLOR_ACCENT)
-                        .add_modifier(Modifier::BOLD)
-                } else {
-                    Style::default().fg(COLOR_TEXT)
-                };
-                let prefix = if selected { "▶ " } else { "  " };
-                ListItem::new(Line::from(vec![
-                    Span::styled(prefix, style),
-                    Span::styled("📋 ", style),
-                    Span::styled(&draft.name, style),
-                    Span::styled(
-                        format!(" - {}", draft.blueprint_name),
-                        Style::default().fg(COLOR_DIM),
-                    ),
-                    Span::raw("  "),
-                    Span::styled(
-                        format!("Updated: {}", draft.updated_at),
-                        Style::default().fg(COLOR_DIM),
-                    ),
-                ]))
-            })
-            .collect();
-
-        let list = List::new(items)
-            .block(
-                Block::default()
-                    .title(format!("📂 Saved Drafts ({})", app.drafts.len()))
-                    .borders(Borders::ALL)
-                    .border_type(BorderType::Rounded)
-                    .border_style(Style::default().fg(COLOR_BORDER)),
-            )
-            .highlight_style(
-                Style::default()
-                    .bg(Color::Rgb(60, 60, 80))
-                    .add_modifier(Modifier::BOLD),
-            );
-
-        let mut state = ListState::default();
-        state.select(Some(app.selected_draft));
-        f.render_stateful_widget(list, chunks[1], &mut state);
+        f.render_widget(empty, area);
+        return;
     }
 
-    let footer = Paragraph::new(Line::from(vec![
-        Span::styled(" ⌨  ", Style::default().fg(COLOR_ACCENT)),
-        Span::styled(
-            "↑/↓: Navigate | Enter: Open Draft | n: New Project | d: Delete | r: Refresh | q: Quit",
-            Style::default().fg(COLOR_TEXT),
-        ),
-    ]))
-    .block(
-        Block::default()
-            .borders(Borders::ALL)
-            .border_type(BorderType::Rounded)
-            .border_style(Style::default().fg(COLOR_BORDER)),
-    );
-    f.render_widget(footer, chunks[2]);
+    let items: Vec<ListItem> = app
+        .drafts
+        .iter()
+        .enumerate()
+        .map(|(i, (_filename, draft))| {
+            let selected = i == app.selected_draft && is_focused;
+            let style = if selected {
+                Style::default()
+                    .fg(COLOR_ACCENT)
+                    .add_modifier(Modifier::BOLD)
+            } else {
+                Style::default().fg(COLOR_TEXT)
+            };
+            let prefix = if selected { "▶ " } else { "  " };
+            ListItem::new(Line::from(vec![
+                Span::styled(prefix, style),
+                Span::styled("📋 ", style),
+                Span::styled(&draft.name, style),
+                Span::styled(
+                    format!("  [{}]", draft.blueprint_name),
+                    Style::default().fg(COLOR_DIM),
+                ),
+            ]))
+        })
+        .collect();
+
+    let list = List::new(items)
+        .block(
+            Block::default()
+                .title(title)
+                .borders(Borders::ALL)
+                .border_type(BorderType::Rounded)
+                .border_style(Style::default().fg(border_color)),
+        )
+        .highlight_style(
+            Style::default()
+                .bg(Color::Rgb(60, 60, 80))
+                .add_modifier(Modifier::BOLD),
+        );
+
+    let mut state = ListState::default();
+    state.select(Some(app.selected_draft));
+    f.render_stateful_widget(list, area, &mut state);
 }
 
 // ─────────────────────────────────────────────
@@ -294,10 +298,8 @@ fn render_form_split(f: &mut Frame, app: &App, area: Rect) {
         ])
         .split(area);
 
-    // Top navbar
     render_navbar(f, app, blueprint, main_chunks[0]);
 
-    // Content: split horizontally
     let content_chunks = Layout::default()
         .direction(Direction::Horizontal)
         .constraints([Constraint::Percentage(50), Constraint::Percentage(50)])
@@ -306,11 +308,10 @@ fn render_form_split(f: &mut Frame, app: &App, area: Rect) {
     render_form_left(f, app, content_chunks[0]);
     render_preview_right(f, app, content_chunks[1]);
 
-    // Footer
     let footer = Paragraph::new(Line::from(vec![
         Span::styled(" ⌨  ", Style::default().fg(COLOR_ACCENT)),
         Span::styled(
-            "↑/↓: Fields | Tab: Next | Enter: Edit/Toggle | Space: Button | ←/→: Sections | g: Generate | Esc: Back",
+            "↑/↓: Fields | Tab: Next | Enter: Edit/Toggle | Space: Button | ←/→: Sections | s: Draft | g: Generate | Esc: Back",
             Style::default().fg(COLOR_TEXT),
         ),
     ]))
@@ -335,7 +336,7 @@ fn render_navbar(f: &mut Frame, app: &App, blueprint: &crate::blueprint::Bluepri
 
     let available_width = area.width.saturating_sub(4) as usize;
 
-    // ── Calculate tab widths for ALL sections ──
+    // Calculate tab widths for ALL sections
     let mut tab_widths: Vec<usize> = Vec::with_capacity(total_sections);
     for section in &blueprint.sections {
         let tab_text = format!("{} {}", section.icon, section.title);
@@ -343,7 +344,7 @@ fn render_navbar(f: &mut Frame, app: &App, blueprint: &crate::blueprint::Bluepri
         tab_widths.push(tab_width);
     }
 
-    // ── Determine visible count ──
+    // Determine visible count
     let mut cumulative_width: usize = 0;
     let mut visible_count: usize = 0;
     for &width in &tab_widths {
@@ -359,7 +360,7 @@ fn render_navbar(f: &mut Frame, app: &App, blueprint: &crate::blueprint::Bluepri
         visible_count = 1;
     }
 
-    // ── Calculate scroll offset to keep current section visible ──
+    // Calculate scroll offset to keep current section visible
     let current = app.form.current_section;
     let mut scroll_offset = app.navbar_scroll_offset;
 
@@ -372,7 +373,7 @@ fn render_navbar(f: &mut Frame, app: &App, blueprint: &crate::blueprint::Bluepri
     let max_scroll = total_sections.saturating_sub(visible_count);
     scroll_offset = scroll_offset.min(max_scroll);
 
-    // ── Build visible tabs ──
+    // Build visible tabs
     let mut visible_titles: Vec<Line> = Vec::new();
     let mut selected_index = 0;
 
@@ -402,7 +403,7 @@ fn render_navbar(f: &mut Frame, app: &App, blueprint: &crate::blueprint::Bluepri
         )));
     }
 
-    // ── Build navbar title with scroll indicators ──
+    // Build navbar title with scroll indicators
     let can_scroll_left = scroll_offset > 0;
     let can_scroll_right = scroll_offset + visible_count < total_sections;
 
@@ -480,7 +481,6 @@ fn render_form_left(f: &mut Frame, app: &App, area: Rect) {
         None => return,
     };
 
-    // Outer form block
     let form_block = Block::default()
         .title(format!(
             "📋 {} (Section {}/{})",
@@ -524,13 +524,14 @@ fn render_form_left(f: &mut Frame, app: &App, area: Rect) {
             FieldType::ListBuilder => 12,
             FieldType::CrateSearch => 12,
             FieldType::ActionButton => 5,
+            FieldType::Multiselect => (field.options.len() as u16 + 2).max(3),
             _ => 3,
         })
         .collect();
 
     // Calculate how many fields fit on screen
     let available_height = inner.height;
-    let max_fields_to_render = 20; // Hard cap
+    let max_fields_to_render = 20;
     let mut visible_count = 0;
     let mut cumulative_height: u16 = 0;
 
@@ -547,9 +548,22 @@ fn render_form_left(f: &mut Frame, app: &App, area: Rect) {
         visible_count = 1;
     }
 
-    // Calculate scroll offset
+    // ── Self-correct scroll offset to ALWAYS show selected field ──
+    let selected = app.form.selected_field.min(total_fields.saturating_sub(1));
+    let mut scroll_offset = app.form.scroll_offset;
+
+    // If selected field is above visible window, scroll up
+    if selected < scroll_offset {
+        scroll_offset = selected;
+    }
+    // If selected field is below visible window, scroll down
+    else if selected >= scroll_offset + visible_count {
+        scroll_offset = selected.saturating_sub(visible_count - 1);
+    }
+
+    // Clamp scroll offset
     let max_scroll = total_fields.saturating_sub(visible_count);
-    let scroll_offset = app.form.scroll_offset.min(max_scroll);
+    scroll_offset = scroll_offset.min(max_scroll);
 
     // Render visible fields
     let mut y_offset = inner.y;
@@ -560,8 +574,7 @@ fn render_form_left(f: &mut Frame, app: &App, area: Rect) {
             break;
         }
 
-        let (_field_idx, field) = &editable_fields[i];
-        // let field_idx = *field_idx;
+        let (_original_idx, field) = &editable_fields[i];
         let field_height = field_heights.get(i).copied().unwrap_or(3);
 
         if y_offset + field_height > inner.y + inner.height {
@@ -575,6 +588,7 @@ fn render_form_left(f: &mut Frame, app: &App, area: Rect) {
             height: field_height,
         };
 
+        // Use filtered index 'i' for focus comparison (not original index)
         let is_focused = i == app.form.selected_field;
         let is_editing = is_focused && app.form.is_editing();
         let value = app.form.values.get(&field.key).cloned().unwrap_or_default();
@@ -628,7 +642,10 @@ fn render_form_left(f: &mut Frame, app: &App, area: Rect) {
                     .iter()
                     .map(|opt| selected_values.contains(&opt.value))
                     .collect();
-                widget.cursor = 0;
+                widget.cursor = app
+                    .form
+                    .list_selected
+                    .min(widget.options.len().saturating_sub(1));
                 widget.render(f, field_area);
             }
             FieldType::CrateInput => {
@@ -648,7 +665,8 @@ fn render_form_left(f: &mut Frame, app: &App, area: Rect) {
             }
             FieldType::ListBuilder => {
                 let items = value.as_vec();
-                let input_value = app.form.get_list_input_value();
+                // Use field-specific input value, NOT get_current_key()
+                let input_value = app.form.get_list_input_value_for_key(&field.key);
                 let mut widget = ListBuilder::new(&field.label, items, &field.placeholder);
                 widget.focused = is_focused;
                 widget.input_value = input_value;
@@ -656,6 +674,7 @@ fn render_form_left(f: &mut Frame, app: &App, area: Rect) {
                 widget.button_focused = is_focused && app.form.sub_focus == 1;
                 widget.list_focused = is_focused && app.form.sub_focus == 2;
                 widget.list_selected = app.form.list_selected;
+                widget.list_scroll_offset = app.form.list_scroll_offset;
                 widget.cursor_pos = if is_editing { app.form.cursor_pos } else { 0 };
                 widget.render(f, field_area);
             }
@@ -665,7 +684,8 @@ fn render_form_left(f: &mut Frame, app: &App, area: Rect) {
                     .as_deref()
                     .unwrap_or("tech.additional_crates");
                 let added_crates = app.form.get_target_list(target_key);
-                let input_value = app.form.get_list_input_value();
+                // Use field-specific input value
+                let input_value = app.form.get_list_input_value_for_key(&field.key);
                 let mut widget = CrateSearch::new(&field.label, added_crates, &field.placeholder);
                 widget.focused = is_focused;
                 widget.input_value = input_value;
@@ -680,13 +700,29 @@ fn render_form_left(f: &mut Frame, app: &App, area: Rect) {
             FieldType::ActionButton => {
                 let button_text = field.button_text.as_deref().unwrap_or("Action");
                 let display_text = if is_focused {
-                    format!("{} (Press Space)", button_text)
+                    format!("{} [Space]", button_text)
                 } else {
                     button_text.to_string()
                 };
-                let mut widget = Button::new(&field.label, &display_text);
+
+                // Button width: text length + padding, capped at 40
+                let text_len = display_text.chars().count() as u16 + 10;
+                let button_width = text_len.min(40).min(field_area.width);
+
+                // Center horizontally within the available area
+                let x_offset = (field_area.width.saturating_sub(button_width)) / 2;
+
+                let button_area = Rect {
+                    x: field_area.x + x_offset,
+                    y: field_area.y,
+                    width: button_width,
+                    height: field_area.height,
+                };
+
+                // Pass empty label to hide the label text
+                let mut widget = Button::new("Generate Prompt", &display_text);
                 widget.focused = is_focused;
-                widget.render(f, field_area);
+                widget.render(f, button_area);
             }
             FieldType::SearchCrate => {
                 let mut widget = TextInput::new(&field.label, value.as_str(), &field.placeholder);
@@ -704,12 +740,8 @@ fn render_form_left(f: &mut Frame, app: &App, area: Rect) {
 
     // Scroll indicator
     if total_fields > visible_count {
-        let scroll_info = format!(
-            " {}-{} of {} ",
-            scroll_offset + 1,
-            (scroll_offset + rendered).min(total_fields),
-            total_fields
-        );
+        let end_shown = (scroll_offset + rendered).min(total_fields);
+        let scroll_info = format!(" {}-{} of {} ", scroll_offset + 1, end_shown, total_fields);
         let indicator = Paragraph::new(scroll_info)
             .style(Style::default().fg(COLOR_DIM).add_modifier(Modifier::BOLD))
             .alignment(Alignment::Right);
@@ -782,7 +814,13 @@ fn generate_styled_preview(app: &App) -> Vec<Line<'static>> {
             )));
 
             for field in &section.fields {
-                if matches!(field.field_type, FieldType::SectionBreak) {
+                if matches!(
+                    field.field_type,
+                    FieldType::SectionBreak | FieldType::ActionButton
+                ) {
+                    continue;
+                }
+                if field.hidden {
                     continue;
                 }
 
@@ -869,14 +907,16 @@ fn generate_styled_preview(app: &App) -> Vec<Line<'static>> {
                     }
                     _ => {
                         let val_owned = value.as_str().to_string();
-                        lines.push(Line::from(vec![
-                            Span::styled("  • ", Style::default().fg(COLOR_ACCENT)),
-                            Span::styled(
-                                format!("{}: ", label_owned),
-                                Style::default().fg(COLOR_DIM),
-                            ),
-                            Span::styled(val_owned, Style::default().fg(COLOR_TEXT)),
-                        ]));
+                        if !val_owned.is_empty() {
+                            lines.push(Line::from(vec![
+                                Span::styled("  • ", Style::default().fg(COLOR_ACCENT)),
+                                Span::styled(
+                                    format!("{}: ", label_owned),
+                                    Style::default().fg(COLOR_DIM),
+                                ),
+                                Span::styled(val_owned, Style::default().fg(COLOR_TEXT)),
+                            ]));
+                        }
                     }
                 }
             }
@@ -1003,11 +1043,11 @@ fn render_review(f: &mut Frame, app: &App, area: Rect) {
 }
 
 // ─────────────────────────────────────────────
-// Success modal
+// Success modal (solid background)
 // ─────────────────────────────────────────────
 
 fn render_success_modal(f: &mut Frame, app: &App, area: Rect) {
-    // ── Fill entire screen with solid dark overlay using spaces ──
+    // Fill entire screen with solid dark overlay using spaces
     let mut overlay_content = String::new();
     for _ in 0..area.height {
         overlay_content.push_str(&" ".repeat(area.width as usize));
@@ -1016,23 +1056,22 @@ fn render_success_modal(f: &mut Frame, app: &App, area: Rect) {
     let overlay = Paragraph::new(overlay_content).style(Style::default().bg(Color::Rgb(5, 5, 10)));
     f.render_widget(overlay, area);
 
-    // ── Calculate modal size ──
-    let modal_width = 60u16.min(area.width.saturating_sub(4));
-    let modal_height = 13u16.min(area.height.saturating_sub(4));
+    // Calculate modal size
+    let modal_width = 85u16.min(area.width.saturating_sub(4));
+    let modal_height = 14u16.min(area.height.saturating_sub(4));
 
     let modal_x = area.x + (area.width.saturating_sub(modal_width)) / 2;
     let modal_y = area.y + (area.height.saturating_sub(modal_height)) / 2;
-
     let modal_area = Rect::new(modal_x, modal_y, modal_width, modal_height);
 
-    // ── Determine colors based on success/error ──
+    // Determine colors
     let (title, border_color, modal_bg) = if app.last_error.is_some() {
         ("✗ Error", COLOR_DANGER, Color::Rgb(35, 20, 25))
     } else {
         ("✓ Success", COLOR_SUCCESS, Color::Rgb(20, 35, 25))
     };
 
-    // ── Fill modal area with solid background using spaces ──
+    // Fill modal area with solid background
     let mut modal_fill_content = String::new();
     for _ in 0..modal_area.height {
         modal_fill_content.push_str(&" ".repeat(modal_area.width as usize));
@@ -1041,7 +1080,7 @@ fn render_success_modal(f: &mut Frame, app: &App, area: Rect) {
     let modal_fill = Paragraph::new(modal_fill_content).style(Style::default().bg(modal_bg));
     f.render_widget(modal_fill, modal_area);
 
-    // ── Modal border block ──
+    // Modal border block
     let modal_block = Block::default()
         .title(format!(" {} ", title))
         .title_alignment(Alignment::Center)
@@ -1057,7 +1096,7 @@ fn render_success_modal(f: &mut Frame, app: &App, area: Rect) {
         return;
     }
 
-    // ── Fill inner content area with solid background ──
+    // Fill inner content area with solid background
     let mut inner_fill_content = String::new();
     for _ in 0..inner.height {
         inner_fill_content.push_str(&" ".repeat(inner.width as usize));
@@ -1066,7 +1105,7 @@ fn render_success_modal(f: &mut Frame, app: &App, area: Rect) {
     let inner_fill = Paragraph::new(inner_fill_content).style(Style::default().bg(modal_bg));
     f.render_widget(inner_fill, inner);
 
-    // ── Build modal content ──
+    // Build modal content
     let mut lines: Vec<Line> = Vec::new();
     lines.push(Line::from(""));
 
@@ -1127,6 +1166,17 @@ fn render_success_modal(f: &mut Frame, app: &App, area: Rect) {
             Style::default().fg(COLOR_DIM).bg(modal_bg),
         ),
         Span::styled(
+            "o",
+            Style::default()
+                .fg(COLOR_WARNING)
+                .bg(modal_bg)
+                .add_modifier(Modifier::BOLD),
+        ),
+        Span::styled(
+            " open prompts folder  ",
+            Style::default().fg(COLOR_DIM).bg(modal_bg),
+        ),
+        Span::styled(
             "m",
             Style::default()
                 .fg(COLOR_ACCENT)
@@ -1147,7 +1197,6 @@ fn render_success_modal(f: &mut Frame, app: &App, area: Rect) {
         Span::styled(" to quit", Style::default().fg(COLOR_DIM).bg(modal_bg)),
     ]));
 
-    // ── Render content with solid background ──
     let modal_content = Paragraph::new(lines)
         .style(Style::default().bg(modal_bg))
         .alignment(Alignment::Center)
@@ -1157,145 +1206,7 @@ fn render_success_modal(f: &mut Frame, app: &App, area: Rect) {
 }
 
 // ─────────────────────────────────────────────
-// Mouse handlers
-// ─────────────────────────────────────────────
-
-pub fn handle_menu_mouse(app: &mut App, mouse: &crossterm::event::MouseEvent) {
-    use crossterm::event::{MouseButton, MouseEventKind};
-
-    if matches!(mouse.kind, MouseEventKind::Down(MouseButton::Left)) {
-        let item_row = mouse.row.saturating_sub(4) as usize;
-        if item_row < app.blueprints.len() {
-            app.selected_blueprint = item_row;
-        }
-    }
-}
-
-pub fn handle_drafts_mouse(app: &mut App, mouse: &crossterm::event::MouseEvent) {
-    use crossterm::event::{MouseButton, MouseEventKind};
-
-    if matches!(mouse.kind, MouseEventKind::Down(MouseButton::Left)) {
-        let item_row = mouse.row.saturating_sub(4) as usize;
-        if item_row < app.drafts.len() {
-            app.selected_draft = item_row;
-        }
-    }
-}
-
-pub fn handle_form_mouse(app: &mut App, mouse: &crossterm::event::MouseEvent) {
-    use crossterm::event::{MouseButton, MouseEventKind};
-
-    let terminal_width = 120u16;
-    let form_width = terminal_width / 2;
-
-    match mouse.kind {
-        MouseEventKind::Down(MouseButton::Left) => {
-            // ── NAVBAR CLICK (top 3 rows) ──
-            if mouse.row < 3 {
-                if let Some(blueprint) = &app.current_blueprint {
-                    let total_sections = blueprint.sections.len();
-                    if total_sections == 0 {
-                        return;
-                    }
-
-                    let available_width = terminal_width.saturating_sub(4) as usize;
-
-                    // ── Calculate tab widths for ALL sections first ──
-                    let mut tab_widths: Vec<usize> = Vec::with_capacity(total_sections);
-                    for section in &blueprint.sections {
-                        let tab_text = format!("{} {}", section.icon, section.title);
-                        let tab_width = tab_text.chars().count() + 4;
-                        tab_widths.push(tab_width);
-                    }
-
-                    // ── Determine how many tabs are visible ──
-                    let mut cumulative_width: usize = 0;
-                    let mut visible_count: usize = 0;
-                    for &width in &tab_widths {
-                        if cumulative_width + width <= available_width {
-                            cumulative_width += width;
-                            visible_count += 1;
-                        } else {
-                            break;
-                        }
-                    }
-
-                    if visible_count == 0 {
-                        visible_count = 1;
-                    }
-
-                    // ── Calculate scroll offset ──
-                    let scroll_offset = app.navbar_scroll_offset;
-                    let max_scroll = total_sections.saturating_sub(visible_count);
-                    let clamped_offset = scroll_offset.min(max_scroll);
-
-                    // ── Find which visible tab was clicked ──
-                    let mut x_pos: u16 = 2;
-                    for i in clamped_offset..(clamped_offset + visible_count).min(total_sections) {
-                        // Safety check: ensure index is within tab_widths
-                        if i >= tab_widths.len() {
-                            break;
-                        }
-
-                        let tab_width = tab_widths[i] as u16;
-                        if mouse.column >= x_pos && mouse.column < x_pos + tab_width {
-                            app.form.go_to_section(i);
-                            app.ensure_navbar_visible(visible_count);
-                            return;
-                        }
-                        x_pos += tab_width + 3; // +3 for divider
-                    }
-                }
-                return;
-            }
-
-            // ── FORM AREA CLICK (left half, below navbar) ──
-            if mouse.column < form_width && mouse.row >= 3 {
-                let field_row = mouse.row.saturating_sub(5);
-                let field_height = 3u16;
-                let field_index = (field_row / field_height) as usize + app.form.scroll_offset;
-                let field_count = app.form.current_section_field_count();
-                if field_index < field_count {
-                    app.form.selected_field = field_index;
-                }
-            }
-        }
-        MouseEventKind::ScrollUp => {
-            if mouse.row < 3 {
-                app.navbar_scroll_left();
-            } else if mouse.column < form_width {
-                if app.form.is_editing() && app.form.is_multiline() {
-                    app.form.scroll_text_up(1);
-                } else {
-                    app.form.scroll_up(1);
-                }
-            } else {
-                app.preview_scroll = app.preview_scroll.saturating_sub(3);
-            }
-        }
-        MouseEventKind::ScrollDown => {
-            if mouse.row < 3 {
-                app.navbar_scroll_right();
-            } else if mouse.column < form_width {
-                if app.form.is_editing() && app.form.is_multiline() {
-                    app.form.scroll_text_down(1);
-                } else {
-                    app.form.scroll_down(1);
-                }
-            } else {
-                app.preview_scroll = app.preview_scroll.saturating_add(3);
-            }
-        }
-        _ => {}
-    }
-}
-
-pub fn handle_success_mouse(app: &mut App, _mouse: &crossterm::event::MouseEvent) {
-    app.current_screen = Screen::Form;
-}
-
-// ─────────────────────────────────────────────
-// Error modal
+// Error modal (solid background)
 // ─────────────────────────────────────────────
 
 fn render_error_modal(f: &mut Frame, app: &App, area: Rect) {
@@ -1306,7 +1217,7 @@ fn render_error_modal(f: &mut Frame, app: &App, area: Rect) {
         .unwrap_or("An unknown error occurred");
     let details = app.error_details.as_deref();
 
-    // ── Fill entire screen with solid dark overlay using spaces ──
+    // Fill entire screen with solid dark overlay
     let mut overlay_content = String::new();
     for _ in 0..area.height {
         overlay_content.push_str(&" ".repeat(area.width as usize));
@@ -1327,11 +1238,11 @@ fn render_error_modal(f: &mut Frame, app: &App, area: Rect) {
 
     let modal_x = area.x + (area.width.saturating_sub(modal_width)) / 2;
     let modal_y = area.y + (area.height.saturating_sub(modal_height)) / 2;
-
     let modal_area = Rect::new(modal_x, modal_y, modal_width, modal_height);
 
-    // ── Fill modal area with solid background using spaces ──
     let modal_bg = Color::Rgb(35, 20, 25);
+
+    // Fill modal area with solid background
     let mut modal_fill_content = String::new();
     for _ in 0..modal_area.height {
         modal_fill_content.push_str(&" ".repeat(modal_area.width as usize));
@@ -1340,7 +1251,7 @@ fn render_error_modal(f: &mut Frame, app: &App, area: Rect) {
     let modal_fill = Paragraph::new(modal_fill_content).style(Style::default().bg(modal_bg));
     f.render_widget(modal_fill, modal_area);
 
-    // ── Modal border block ──
+    // Modal border block
     let modal_block = Block::default()
         .title(format!(" ✗ {} ", title))
         .title_alignment(Alignment::Center)
@@ -1356,7 +1267,7 @@ fn render_error_modal(f: &mut Frame, app: &App, area: Rect) {
         return;
     }
 
-    // ── Fill inner content area with solid background ──
+    // Fill inner content area
     let mut inner_fill_content = String::new();
     for _ in 0..inner.height {
         inner_fill_content.push_str(&" ".repeat(inner.width as usize));
@@ -1365,16 +1276,16 @@ fn render_error_modal(f: &mut Frame, app: &App, area: Rect) {
     let inner_fill = Paragraph::new(inner_fill_content).style(Style::default().bg(modal_bg));
     f.render_widget(inner_fill, inner);
 
-    // ── Build modal content ──
+    // Build modal content
     let mut lines: Vec<Line> = Vec::new();
     lines.push(Line::from(""));
 
-    // Error icon and main message
     lines.push(Line::from(vec![
         Span::styled(
             "  ⚠  ",
             Style::default()
                 .fg(COLOR_DANGER)
+                .bg(modal_bg)
                 .add_modifier(Modifier::BOLD),
         ),
         Span::styled(
@@ -1386,7 +1297,6 @@ fn render_error_modal(f: &mut Frame, app: &App, area: Rect) {
         ),
     ]));
 
-    // Details section if available
     if let Some(details_text) = details {
         lines.push(Line::from(""));
         lines.push(Line::from(Span::styled(
@@ -1431,7 +1341,165 @@ fn render_error_modal(f: &mut Frame, app: &App, area: Rect) {
         Span::styled(" to dismiss", Style::default().fg(COLOR_DIM).bg(modal_bg)),
     ]));
 
-    // ── Render content with solid background ──
+    let modal_content = Paragraph::new(lines)
+        .style(Style::default().bg(modal_bg))
+        .wrap(Wrap { trim: false });
+
+    f.render_widget(modal_content, inner);
+}
+
+// ─────────────────────────────────────────────
+// Mouse handlers
+// ─────────────────────────────────────────────
+
+pub fn handle_form_mouse(app: &mut App, mouse: &crossterm::event::MouseEvent) {
+    use crossterm::event::{MouseButton, MouseEventKind};
+
+    let terminal_width = 120u16;
+    let form_width = terminal_width / 2;
+
+    match mouse.kind {
+        MouseEventKind::Down(MouseButton::Left) => {
+            // Form area click (left half, below navbar)
+            if mouse.column < form_width && mouse.row >= 3 {
+                let field_row = mouse.row.saturating_sub(5);
+                let field_height = 3u16;
+                let field_index = (field_row / field_height) as usize + app.form.scroll_offset;
+                let field_count = app.form.current_section_field_count();
+                if field_index < field_count {
+                    app.form.selected_field = field_index;
+                }
+            }
+        }
+        MouseEventKind::ScrollUp => {
+            if mouse.row < 3 {
+                app.navbar_scroll_left();
+            } else if mouse.column < form_width {
+                if app.form.is_editing() && app.form.is_multiline() {
+                    app.form.scroll_text_up(1);
+                } else {
+                    app.form.scroll_up(1);
+                }
+            } else {
+                app.preview_scroll = app.preview_scroll.saturating_sub(3);
+            }
+        }
+        MouseEventKind::ScrollDown => {
+            if mouse.row < 3 {
+                app.navbar_scroll_right();
+            } else if mouse.column < form_width {
+                if app.form.is_editing() && app.form.is_multiline() {
+                    app.form.scroll_text_down(1);
+                } else {
+                    app.form.scroll_down(1);
+                }
+            } else {
+                app.preview_scroll = app.preview_scroll.saturating_add(3);
+            }
+        }
+        _ => {}
+    }
+}
+
+#[allow(dead_code)]
+pub fn handle_success_mouse(app: &mut App, _mouse: &crossterm::event::MouseEvent) {
+    app.current_screen = Screen::Form;
+}
+
+fn render_exit_confirm_modal(f: &mut Frame, app: &App, area: Rect) {
+    // Fill entire screen with solid dark overlay
+    let mut overlay_content = String::new();
+    for _ in 0..area.height {
+        overlay_content.push_str(&" ".repeat(area.width as usize));
+        overlay_content.push('\n');
+    }
+    let overlay = Paragraph::new(overlay_content).style(Style::default().bg(Color::Rgb(5, 5, 10)));
+    f.render_widget(overlay, area);
+
+    // Modal size
+    let modal_width = 50u16.min(area.width.saturating_sub(4));
+    let modal_height = 11u16.min(area.height.saturating_sub(4));
+
+    let modal_x = area.x + (area.width.saturating_sub(modal_width)) / 2;
+    let modal_y = area.y + (area.height.saturating_sub(modal_height)) / 2;
+    let modal_area = Rect::new(modal_x, modal_y, modal_width, modal_height);
+
+    let modal_bg = Color::Rgb(30, 30, 45);
+
+    // Fill modal area
+    let mut modal_fill_content = String::new();
+    for _ in 0..modal_area.height {
+        modal_fill_content.push_str(&" ".repeat(modal_area.width as usize));
+        modal_fill_content.push('\n');
+    }
+    let modal_fill = Paragraph::new(modal_fill_content).style(Style::default().bg(modal_bg));
+    f.render_widget(modal_fill, modal_area);
+
+    // Modal block
+    let modal_block = Block::default()
+        .title(" ⚠ Unsaved Changes ")
+        .title_alignment(Alignment::Center)
+        .borders(Borders::ALL)
+        .border_type(BorderType::Double)
+        .border_style(Style::default().fg(COLOR_WARNING))
+        .style(Style::default().bg(modal_bg));
+
+    let inner = modal_block.inner(modal_area);
+    f.render_widget(modal_block, modal_area);
+
+    if inner.height == 0 || inner.width == 0 {
+        return;
+    }
+
+    // Fill inner area
+    let mut inner_fill_content = String::new();
+    for _ in 0..inner.height {
+        inner_fill_content.push_str(&" ".repeat(inner.width as usize));
+        inner_fill_content.push('\n');
+    }
+    let inner_fill = Paragraph::new(inner_fill_content).style(Style::default().bg(modal_bg));
+    f.render_widget(inner_fill, inner);
+
+    // Build content
+    let options = [
+        ("💾 Save Draft & Exit", "s"),
+        ("🚪 Exit Without Saving", "x"),
+        ("↩  Cancel", "Esc"),
+    ];
+
+    let mut lines: Vec<Line> = Vec::new();
+    lines.push(Line::from(Span::styled(
+        "  Do you want to save your progress?",
+        Style::default().fg(COLOR_TEXT).bg(modal_bg),
+    )));
+    lines.push(Line::from(""));
+
+    for (i, (text, shortcut)) in options.iter().enumerate() {
+        let is_selected = i == app.exit_confirm_selection;
+        let prefix = if is_selected { "  ▶ " } else { "    " };
+        let style = if is_selected {
+            Style::default()
+                .fg(COLOR_ACCENT)
+                .bg(modal_bg)
+                .add_modifier(Modifier::BOLD)
+        } else {
+            Style::default().fg(COLOR_DIM).bg(modal_bg)
+        };
+        let shortcut_style = Style::default().fg(COLOR_DIM).bg(modal_bg);
+
+        lines.push(Line::from(vec![
+            Span::styled(prefix, style),
+            Span::styled(*text, style),
+            Span::styled(format!("  [{}]", shortcut), shortcut_style),
+        ]));
+    }
+
+    lines.push(Line::from(""));
+    lines.push(Line::from(Span::styled(
+        "  ↑/↓: Navigate | Enter: Select | Esc: Cancel",
+        Style::default().fg(COLOR_DIM).bg(modal_bg),
+    )));
+
     let modal_content = Paragraph::new(lines)
         .style(Style::default().bg(modal_bg))
         .wrap(Wrap { trim: false });

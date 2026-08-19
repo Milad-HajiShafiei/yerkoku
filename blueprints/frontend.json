@@ -794,7 +794,7 @@
           "key": "actions.generate_copy",
           "label": "Generate Prompt",
           "type": "action_button",
-          "button_text": "🚀 Generate & Copy to Clipboard",
+          "button_text": "🚀 Generate & Copy",
           "action": "generate_copy"
         }
       ]

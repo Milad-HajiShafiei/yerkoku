@@ -51,6 +51,17 @@ pub struct App {
         Option<mpsc::Receiver<Result<crate::package_registry::PackageInfo, String>>>,
     pub search_target_key: Option<String>,
     pub search_add_to_list: bool,
+
+    pub panel_focus: PanelFocus,
+
+    pub show_exit_confirm: bool,
+    pub exit_confirm_selection: usize,
+}
+
+#[derive(Debug, Clone, Copy, PartialEq)]
+pub enum PanelFocus {
+    Blueprints,
+    Drafts,
 }
 
 impl App {
@@ -109,6 +120,9 @@ impl App {
             search_receiver: None,
             search_target_key: None,
             search_add_to_list: false,
+            panel_focus: PanelFocus::Blueprints,
+            show_exit_confirm: false,
+            exit_confirm_selection: 0,
         }
     }
 
@@ -332,6 +346,27 @@ impl App {
     /// Check if error modal is showing
     pub fn has_error(&self) -> bool {
         self.error_message.is_some()
+    }
+
+    pub fn request_exit(&mut self) {
+        self.show_exit_confirm = true;
+        self.exit_confirm_selection = 0;
+    }
+
+    pub fn cancel_exit(&mut self) {
+        self.show_exit_confirm = false;
+        self.exit_confirm_selection = 0;
+    }
+
+    pub fn confirm_exit_with_save(&mut self) {
+        self.show_exit_confirm = false;
+        let _ = self.save_current_draft();
+        self.current_screen = Screen::Menu;
+    }
+
+    pub fn confirm_exit_without_save(&mut self) {
+        self.show_exit_confirm = false;
+        self.current_screen = Screen::Menu;
     }
 }
 
